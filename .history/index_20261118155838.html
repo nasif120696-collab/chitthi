@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>চিঠি (CHITTHI) — অনুভূতির ডিজিটাল ডাকঘর</title>
+  <link rel="icon" type="image/png" href="assets/chitthi-favicon.png" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ======================================================================
+       V12 CINEMATIC INTERACTIVE INTRO (Sunlit Postbox -> Match Melt -> Pull & Calligraphy)
+       ====================================================================== -->
+  <section id="letterbox-intro" class="v12-cinematic-intro" aria-label="Cinematic Vintage Postbox Intro">
+    <div class="v12-intro-bg"></div>
+    <div class="sunbeam-layer"></div>
+    <div class="dust-container" id="dust-container"></div>
+    <div class="v12-leaves-container" id="v12-leaves-container"></div>
+
+    <!-- Top Controls -->
+    <div class="intro-top-bar">
+      <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+        <button id="intro-sound-btn" class="pill-btn" type="button">🎵 <span data-i18n="sound_off">আবহ সঙ্গীত</span></button>
+        <button id="intro-lang-btn" class="pill-btn" type="button">বাংলা | EN</button>
+      </div>
+      <button id="skip-intro-btn" class="pill-btn" type="button" data-i18n="skip_intro">ইন্ট্রো এড়িয়ে যান →</button>
+    </div>
+
+    <!-- Progress Dots -->
+    <div class="v12-step-dots" aria-hidden="true">
+      <span class="v12-dot active" id="dot-step-1"></span>
+      <span class="v12-dot" id="dot-step-2"></span>
+      <span class="v12-dot" id="dot-step-3"></span>
+    </div>
+
+    <!-- Central Interactive Stage -->
+    <div class="v12-intro-stage">
+
+      <!-- STAGE 1: Artistic "চিঠি বক্স ১১.১১" Framed Postcard & Floating Envelope -->
+      <div class="v12-stage-card active" id="v12-stage-1">
+        <div class="v12-postcard-frame">
+          <img src="assets/theme-chitthi-box.jpg" alt="চিঠি বক্স ১১.১১" class="v12-postcard-art" />
+          <div class="v12-postcard-shimmer"></div>
+          <div class="v12-floating-stamp">
+            <img src="assets/stamp-dhaka-curzon.jpg" alt="Dhaka Post Stamp" />
+          </div>
+          <div class="v12-postmark-stamp">
+            <span>বাংলাদেশ ডাক</span>
+            <span>১১.১১ • ঢাকা</span>
+          </div>
+        </div>
+
+        <p class="v12-poetic-line" id="v12-line-1">
+          “ডিজিটাল কোলাহলের ভিড়ে… কিছু অনুভূতি আজও একটি চিঠির অপেক্ষায় থাকে।”
+        </p>
+
+        <button type="button" class="btn-gold v12-pulse-btn" id="v12-collect-btn">
+          <span>✉️</span>
+          <span>চিঠিটি হাতে নিন</span>
+        </button>
+      </div>
+
+      <!-- STAGE 2: Interactive Matchstick Strike & Wax Seal Melting + Pull-Out Letter -->
+      <div class="v12-stage-card" id="v12-stage-2">
+        <div style="margin-bottom:1rem;">
+          <button type="button" class="matchstick-btn" id="v12-strike-match-btn">
+            🔥 দিয়াশলাই জ্বালিয়ে মোম গলান
+          </button>
+        </div>
+
+        <div class="hero-envelope v12-hero-env" id="hero-envelope">
+          <div class="hero-envelope-flap"></div>
+
+          <!-- Peekable Letter Card (Pull Up or Tap) -->
+          <div class="pullable-letter-peek" id="v12-pull-letter">
+            <div style="font-weight:700; color:#8f1d24; font-size:0.95rem;">⬆️ আঙুল দিয়ে ওপরে টেনে চিঠি বের করুন</div>
+            <div style="font-size:0.78rem; opacity:0.78; margin-top:4px;">(অথবা কাগজে ট্যাপ করুন)</div>
+          </div>
+
+          <button type="button" class="wax-seal-btn" id="wax-seal-btn" title="মোমের সিল গলান">
+            চি
+          </button>
+
+          <div style="position:absolute; bottom:18px; left:0; right:0; text-align:center; color:var(--ink-sepia); font-family:var(--font-bn-serif); font-weight:700; font-size:0.95rem; z-index:4;">
+            প্রাপক: অনুভূতির পাঠক • ডাকঘর ১১.১১
+          </div>
+        </div>
+
+        <p class="v12-poetic-line" id="v12-line-2" style="margin-top:1.15rem;">
+          “দিয়াশলাইয়ের আগুনে মোমের সিল গলিয়ে খামটি খুলুন…”
+        </p>
+      </div>
+
+      <!-- STAGE 3: Unfolded Cotton Parchment + Live Fountain Pen Writing Welcome Note -->
+      <div class="v12-stage-card" id="v12-stage-3">
+        <div class="v12-unfolded-letter">
+          <div class="v12-letter-stamp-mini">
+            <img src="assets/stamp-bangladesh-85.jpg" alt="Bangladesh 85 Stamp" />
+          </div>
+
+          <img src="assets/chitthi-logo.png" alt="Chitthi Emblem" style="width:68px; height:68px; border-radius:50%; border:1.5px solid var(--gold-muted); margin-bottom:0.45rem;" />
+
+          <h2 class="script-accent" style="color:var(--wax-crimson); font-size:1.75rem; margin-bottom:0.2rem;" data-i18n="welcome_title">
+            চিঠিতে স্বাগতম।
+          </h2>
+
+          <div class="v12-live-calligraphy-box">
+            <span id="v12-typed-quote" class="serif-title"></span><span class="v12-pen-cursor">✒️</span>
+          </div>
+
+          <p style="font-size:0.86rem; color:var(--ink-faded); margin-top:0.65rem; margin-bottom:1.15rem;">
+            ফাউন্টেন পেনের কালি, মোমের সিলমোহর ও পছন্দের গানের সুরে সাজান আপনার মনের কথা।
+          </p>
+
+          <div style="display:flex; gap:0.65rem; justify-content:center; flex-wrap:wrap;">
+            <button type="button" class="btn-crimson" id="enter-chitthi-btn" style="padding:0.72rem 1.55rem; font-size:0.96rem;" data-i18n="enter_world_btn">
+              চিঠির জগতে প্রবেশ করুন ✨
+            </button>
+            <a href="write.html" data-page-flip class="btn-outline" style="color:var(--ink-sepia); border-color:var(--ink-sepia); padding:0.68rem 1.25rem; font-size:0.9rem;">
+              সরাসরি চিঠি লিখুন ✒️
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Postman Delivery Bell Banner (#9) -->
+  <main class="container">
+    <div id="postman-bell-banner" class="vintage-card" style="display:none; margin-bottom:1.4rem; padding:0.95rem 1.35rem; border-color:var(--gold-bright);">
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.75rem;">
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <span style="font-size:1.65rem;">🚲🔔</span>
+          <div>
+            <div style="font-weight:700; color:var(--gold-bright);">ডাকপিয়ন এসেছে! আপনার পোস্টবক্সে নতুন চিঠি বা উত্তর জমা হয়েছে।</div>
+            <div style="font-size:0.84rem; color:var(--cream-aged);">পোস্টবক্স ও গোপন কোড সেকশনে গিয়ে খামটি খুলে দেখুন।</div>
+          </div>
+        </div>
+        <a href="postbox.html" data-page-flip class="btn-gold" style="padding:0.45rem 1.1rem; font-size:0.86rem;">পোস্টবক্স দেখুন</a>
+      </div>
+    </div>
+
+    <section class="hero-hub">
+      <div class="hero-emblem-showcase">
+        <img src="assets/chitthi-logo.png" alt="Chitthi — Some feelings deserve a letter." class="hero-emblem-img" />
+      </div>
+      <div class="postmark-badge">
+        <span>📮</span>
+        <span data-i18n="hub_badge">ডিজিটাল স্লো-পোস্ট ও আবেগের সংগ্রহশালা</span>
+      </div>
+
+      <h1 class="serif-title" data-i18n="hub_title">
+        যে কথা মুখে বলা যায় না, তা চিঠিতে বেঁচে থাকুক
+      </h1>
+
+      <p data-i18n="hub_desc">
+        বাস্তবসম্মত হাত ও ফাউন্টেন পেনের লেখা, পছন্দের গানের সুর, সময়-তালাবদ্ধ ক্যাপসুল, শহরের লাইভ আবহাওয়া আর গোপন প্রতি-উত্তরের ডাকঘর।
+      </p>
+
+      <div class="hero-actions">
+        <a href="write.html" data-page-flip class="btn-gold">
+          <span>✒️</span>
+          <span data-i18n="cta_write">নতুন চিঠি লিখুন</span>
+        </a>
+        <a href="postbox.html" data-page-flip class="btn-outline">
+          <span>📬</span>
+          <span data-i18n="cta_postbox">পোস্টবক্স ও ক্যাম্পাস ওয়াল</span>
+        </a>
+        <button type="button" class="btn-outline" data-open-guide="direct">
+          <span>📖</span>
+          <span data-i18n="cta_guide">কীভাবে পাঠাবেন?</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Vintage Art Postcard Themes Showcase -->
+    <section style="margin-top:2rem; margin-bottom:1.5rem;" aria-label="Vintage Postal Art Themes">
+      <div style="text-align:center; margin-bottom:1.25rem;">
+        <div class="postmark-badge" style="margin-bottom:0.45rem;">
+          <span>🖼️</span>
+          <span>নস্টালজিক ভিন্টেজ আর্ট ও চিঠির থিম</span>
+        </div>
+        <h2 class="serif-title" style="font-size:1.65rem; color:var(--gold-bright);">
+          আপনার চিঠির প্রতিটি পাতায় সাজান পছন্দের ভিন্টেজ দৃশ্য
+        </h2>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:1.1rem;">
+        <a href="write.html?theme=chitthi-box" data-page-flip class="art-gallery-card">
+          <img src="assets/theme-chitthi-box.jpg" alt="চিঠি বক্স ১১.১১" />
+          <div style="padding:0.9rem;">
+            <div style="font-weight:700; color:var(--gold-bright);">📮 চিঠি বক্স (১১.১১)</div>
+            <div style="font-size:0.82rem; color:var(--cream-aged);">সোনালি আভা ও সবুজ লতাপাতার আবহে চিঠি লিখুন</div>
+          </div>
+        </a>
+
+        <a href="write.html?theme=sunlit-window" data-page-flip class="art-gallery-card">
+          <img src="assets/theme-sunlit-window.jpg" alt="রোদেলা কাঠের জানালা" />
+          <div style="padding:0.9rem;">
+            <div style="font-weight:700; color:var(--gold-bright);">🪟 রোদেলা জানালা</div>
+            <div style="font-size:0.82rem; color:var(--cream-aged);">বিকেলের নরম রোদ আর পুরনো কাঠের জানালার ছায়া</div>
+          </div>
+        </a>
+
+        <a href="write.html?theme=calcutta-postbox" data-page-flip class="art-gallery-card">
+          <img src="assets/theme-calcutta-postbox.jpg" alt="পুরনো ডাকবাক্স" />
+          <div style="padding:0.9rem;">
+            <div style="font-weight:700; color:var(--gold-bright);">🏛️ পুরনো ডাকবাক্স</div>
+            <div style="font-size:0.82rem; color:var(--cream-aged);">পুরনো শহরের দেয়াল ও লাল ডাকবাক্সের নস্টালজিয়া</div>
+          </div>
+        </a>
+
+        <a href="write.html?theme=kundakali" data-page-flip class="art-gallery-card">
+          <img src="assets/theme-kundakali-wall.jpg" alt="কুন্দকলি" />
+          <div style="padding:0.9rem;">
+            <div style="font-weight:700; color:var(--gold-bright);">🌿 কুন্দকলি স্মৃতি</div>
+            <div style="font-size:0.82rem; color:var(--cream-aged);">পুরনো বাড়ির নামফলক ও শেওলা ধরা দেয়ালের ছোঁয়া</div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- How to Write & Send Tutorial Section -->
+    <section class="tutorial-showcase-section" id="how-to-send" aria-label="How to Write and Send Tutorial">
+      <div style="text-align:center; max-width:650px; margin:0 auto;">
+        <div class="postmark-badge" style="margin-bottom:0.65rem;">
+          <span>📖</span>
+          <span data-i18n="guide_sec_badge">সহজ ৪ ধাপে চিঠি পাঠানোর নিয়ম</span>
+        </div>
+        <h2 class="serif-title" style="font-size:clamp(1.55rem, 3.2vw, 2.15rem); color:var(--gold-bright);" data-i18n="guide_sec_title">
+          কীভাবে চিঠি লিখবেন ও পাঠাবেন?
+        </h2>
+        <p style="color:var(--cream-aged); font-size:0.98rem; margin-top:0.45rem;" data-i18n="guide_sec_desc">
+          কোনো ঝামেলা ছাড়াই মাত্র কয়েক সেকেন্ডে আপনার অনুভূতির চিঠি লিখে প্রিয় মানুষের কাছে পাঠিয়ে দিন।
+        </p>
+      </div>
+
+      <div class="tutorial-steps-row">
+        <div class="tutorial-step-card">
+          <div class="step-badge-pill">✒️</div>
+          <h4 class="serif-title" data-i18n="step1_title">১. রাইটিং ডেস্কে চিঠি লিখুন</h4>
+          <p data-i18n="step1_desc">
+            ‘চিঠি লিখুন’ পেজে গিয়ে প্রাপকের নাম ও আপনার মনের কথা লিখুন। কলম ও হাত আপনার লেখার গতি অনুসরণ করবে।
+          </p>
+        </div>
+
+        <div class="tutorial-step-card">
+          <div class="step-badge-pill">🎶</div>
+          <h4 class="serif-title" data-i18n="step2_title">২. গান, কাগজ ও তালা সাজান</h4>
+          <p data-i18n="step2_desc">
+            পছন্দের কাগজ, মোমের সিল, শহরের আবহাওয়া ও খামের ভেতরের গান বেছে নিন। চাইলে Time-Lock বা Burn অপশন দিন।
+          </p>
+        </div>
+
+        <div class="tutorial-step-card">
+          <div class="step-badge-pill">🕯️</div>
+          <h4 class="serif-title" data-i18n="step3_title">৩. মোমের সিল দিয়ে লিংক কপি করুন</h4>
+          <p data-i18n="step3_desc">
+            ‘মোমের সিল দিয়ে চিঠি পাঠান’ বাটনে চাপলেই একটি শেয়ারযোগ্য লিংক ও গোপন #BD কোড তৈরি হবে—লিংকটি প্রাপককে পাঠান।
+          </p>
+        </div>
+
+        <div class="tutorial-step-card">
+          <div class="step-badge-pill">💌</div>
+          <h4 class="serif-title" data-i18n="step4_title">৪. সিল ভেঙে পড়া ও গোপন উত্তর</h4>
+          <p data-i18n="step4_desc">
+            প্রাপক লিংকে ঢুকে মোমের সিল ভাঙলেই গানসহ চিঠিটি লেখা হয়ে উঠবে এবং নিচ থেকে পরিচয় গোপন রেখে উত্তর দিতে পারবে।
+          </p>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-top:1.55rem; display:flex; justify-content:center; gap:0.85rem; flex-wrap:wrap;">
+        <button type="button" class="btn-outline" data-open-guide="direct" data-i18n="guide_full_btn">
+          বিস্তারিত টিউটোরিয়াল পড়ুন 📖
+        </button>
+        <a href="write.html" data-page-flip class="btn-gold" data-i18n="cta_write">
+          নতুন চিঠি লিখুন
+        </a>
+      </div>
+    </section>
+
+    <section class="hub-grid">
+      <article class="vintage-card">
+        <div class="card-icon-circle">✍️</div>
+        <h3 class="serif-title" data-i18n="card1_title">জীবন্ত হাত ও ফাউন্টেন পেন</h3>
+        <p data-i18n="card1_desc">
+          আপনি যে ছন্দে ও বিরতিতে চিঠি লিখবেন, প্রাপক খাম খোলার পর কলম ও হাত ঠিক সেই গতিতেই চিঠিটি লিখে দেখাবে।
+        </p>
+        <a href="write.html" data-page-flip class="btn-outline" style="padding:0.5rem 1.1rem; font-size:0.86rem;" data-i18n="nav_write">চিঠি লিখুন →</a>
+      </article>
+
+      <article class="vintage-card">
+        <div class="card-icon-circle">🎶</div>
+        <h3 class="serif-title" data-i18n="card4_title">চিঠির সাথে পছন্দের গান</h3>
+        <p data-i18n="card4_desc">
+          আপনার আপলোড করা MP3 গান বা ভিন্টেজ সুর চিঠির খামে জুড়ে দিন—প্রাপক খাম খুললেই গানটি বেজে উঠবে।
+        </p>
+        <a href="write.html" data-page-flip class="btn-outline" style="padding:0.5rem 1.1rem; font-size:0.86rem;" data-i18n="nav_write">গানসহ চিঠি পাঠান →</a>
+      </article>
+
+      <article class="vintage-card">
+        <div class="card-icon-circle">⏳</div>
+        <h3 class="serif-title" data-i18n="card2_title">সময়-তালাবদ্ধ টাইম ক্যাপসুল</h3>
+        <p data-i18n="card2_desc">
+          জন্মদিন, ঈদ বা বিশেষ কোনো তারিখের আগে চিঠিটি খোলা যাবে না—ততক্ষণ ভিন্টেজ ঘড়ি সময় গুনতে থাকবে।
+        </p>
+        <a href="write.html" data-page-flip class="btn-outline" style="padding:0.5rem 1.1rem; font-size:0.86rem;" data-i18n="nav_write">ক্যাপসুল তৈরি করুন →</a>
+      </article>
+
+      <article class="vintage-card">
+        <div class="card-icon-circle">🔖</div>
+        <h3 class="serif-title" data-i18n="card3_title">গোপন ডাকটিকিট কোড (#BD)</h3>
+        <p data-i18n="card3_desc">
+          পরিচয় গোপন রেখেই প্রাপকের উত্তর জানুন! প্রতিটি চিঠির সাথে পাবেন একটি ৬ ডিজিটের গোপন কোড।
+        </p>
+        <a href="postbox.html#track" data-page-flip class="btn-outline" style="padding:0.5rem 1.1rem; font-size:0.86rem;" data-i18n="nav_track">কোড যাচাই করুন →</a>
+      </article>
+
+      <article class="vintage-card">
+        <div class="card-icon-circle">🎓</div>
+        <h3 class="serif-title" data-i18n="card5_title">ক্যাম্পাস ও উৎসব পোস্টবক্স</h3>
+        <p data-i18n="card5_desc">
+          পহেলা বৈশাখ, ঈদ বা ভার্সিটির র‍্যাগ ডে/ফেয়ারওয়েলের জন্য আলাদা পোস্টবক্স ওয়েল খুলুন—বন্ধুরা সবাই চিঠি ফেলবে।
+        </p>
+        <a href="postbox.html" data-page-flip class="btn-outline" style="padding:0.5rem 1.1rem; font-size:0.86rem;" data-i18n="nav_postbox">উৎসব পোস্টবক্স →</a>
+      </article>
+
+      <article class="vintage-card">
+        <div class="card-icon-circle">🔥</div>
+        <h3 class="serif-title" data-i18n="card6_title">পড়ার পর ছাই (Burn After Reading)</h3>
+        <p data-i18n="card6_desc">
+          একান্ত গোপন কথা পাঠাতে চাইলে এই অপশন চালু করুন—প্রাপক পড়ার পর চিঠিটি আগুনে পুড়ে ছাই হয়ে যাবে।
+        </p>
+        <a href="write.html" data-page-flip class="btn-outline" style="padding:0.5rem 1.1rem; font-size:0.86rem;" data-i18n="nav_write">গোপন চিঠি লিখুন →</a>
+      </article>
+    </section>
+
+    <!-- Creator & Developer Credit Section -->
+    <section class="creator-credit-section" id="credits" aria-label="Creator and Developer Credit">
+      <div class="creator-grid">
+        <div class="creator-portrait-frame">
+          <img src="assets/nasif-portrait.jpg" alt="Mushfiqul Alam Nasif" class="creator-portrait-img" />
+          <div class="creator-wax-badge" title="Creator">চি</div>
+        </div>
+
+        <div>
+          <div class="postmark-badge" style="margin-bottom:0.55rem;">
+            <span>✒️</span>
+            <span data-i18n="credit_badge">নির্মাতা ও ডেভেলপার পরিচিতি</span>
+          </div>
+          <div style="font-size:0.84rem; color:var(--cream-dark);" data-i18n="credit_heading">
+            পরিকল্পনা, ডিজাইন ও ডেভেলপমেন্ট
+          </div>
+          <h2 class="serif-title" style="font-size:1.65rem; color:var(--gold-bright); margin:0.15rem 0 0.35rem;" data-i18n="credit_name">
+            মুশফিকুল আলম নাসিফ (Mushfiqul Alam Nasif)
+          </h2>
+          <p style="font-size:0.95rem; color:var(--cream-paper); font-weight:500; margin-bottom:0.25rem;" data-i18n="credit_role">
+            কম্পিউটার সায়েন্স অ্যান্ড ইঞ্জিনিয়ারিং (CSE), BAUST খুলনা • ফুল-স্ট্যাক ওয়েব ডেভেলপার
+          </p>
+          <p style="font-size:0.85rem; color:var(--cream-dark); margin-bottom:0.65rem;">
+            📍 <span data-i18n="credit_location">খুলনা ও নরসিংদী, বাংলাদেশ</span>
+          </p>
+          <p style="font-size:0.92rem; color:var(--cream-aged); font-style:italic;" data-i18n="credit_bio">
+            “অনুভূতির কথাগুলো যেন হারিয়ে না যায়—সেই ভাবনা থেকেই ডিজিটাল স্লো-পোস্ট ও আবেগের ডাকঘর ‘চিঠি’ তৈরি করা।”
+          </p>
+
+          <div class="creator-social-row">
+            <a href="https://github.com/nasif120696-collab" target="_blank" rel="noopener noreferrer" class="social-pill">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.69-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 2.9-.39c.98 0 1.97.13 2.9.39 2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14 0 1.55-.01 2.8-.01 3.18 0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
+              <span>GitHub (nasif120696-collab)</span>
+            </a>
+
+            <a href="https://www.linkedin.com/in/mushfiqulalamnasif" target="_blank" rel="noopener noreferrer" class="social-pill">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 3A2 2 0 0 1 21 5v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77Z"/></svg>
+              <span>LinkedIn (mushfiqulalamnasif)</span>
+            </a>
+
+            <a href="mailto:mushfiqulalam14@gmail.com" class="social-pill">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg>
+              <span>mushfiqulalam14@gmail.com</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="postal-footer">
+    <div class="footer-dev-mini">
+      <img src="assets/nasif-portrait.jpg" alt="Mushfiqul Alam Nasif" />
+      <div>
+        <div style="font-weight:700; color:var(--gold-bright);" data-i18n="footer_crafted">
+          ভালোবাসা ও যত্নে নির্মিত — মুশফিকুল আলম নাসিফ
+        </div>
+        <div style="font-size:0.78rem; color:var(--cream-dark);">
+          CSE, BAUST Khulna • Some feelings deserve a letter.
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-links">
+      <a href="https://github.com/nasif120696-collab" target="_blank" rel="noopener noreferrer" class="social-pill" style="padding:0.38rem 0.85rem; font-size:0.8rem;">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.69-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 2.9-.39c.98 0 1.97.13 2.9.39 2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14 0 1.55-.01 2.8-.01 3.18 0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
+        <span>GitHub</span>
+      </a>
+      <a href="https://www.linkedin.com/in/mushfiqulalamnasif" target="_blank" rel="noopener noreferrer" class="social-pill" style="padding:0.38rem 0.85rem; font-size:0.8rem;">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 3A2 2 0 0 1 21 5v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77Z"/></svg>
+        <span>LinkedIn</span>
+      </a>
+      <a href="mailto:mushfiqulalam14@gmail.com" class="social-pill" style="padding:0.38rem 0.85rem; font-size:0.8rem;">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg>
+        <span>Gmail</span>
+      </a>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { applyTranslations, toggleLang, getLang, t } from "./js/i18n.js";
+    import { soundEngine, setupGlobalMusicControls } from "./js/audio.js";
+    import { initUnifiedNavbar } from "./js/navbar.js";
+    import { initTutorialGuide } from "./js/guide-modal.js";
+    import { getSentHistory, getLetterByStampCode, getLettersForPostbox } from "./js/storage.js";
+
+    applyTranslations();
+    initUnifiedNavbar("home");
+    const { refreshUI: refreshMusicUI } = setupGlobalMusicControls(getLang, t);
+    initTutorialGuide();
+
+    const dustContainer = document.getElementById("dust-container");
+    if (dustContainer) {
+      for (let i = 0; i < 24; i++) {
+        const mote = document.createElement("div");
+        mote.className = "dust-mote";
+        const size = 2 + Math.random() * 4;
+        mote.style.width = `${size}px`;
+        mote.style.height = `${size}px`;
+        mote.style.left = `${Math.random() * 100}%`;
+        mote.style.top = `${25 + Math.random() * 70}%`;
+        mote.style.animationDuration = `${6 + Math.random() * 8}s`;
+        mote.style.animationDelay = `${Math.random() * 5}s`;
+        dustContainer.appendChild(mote);
+      }
+    }
+
+    // Floating Autumn Leaves in Intro
+    const leavesContainer = document.getElementById("v12-leaves-container");
+    if (leavesContainer) {
+      const leafColors = ["#7c9a45", "#c88a36", "#a84a28", "#d4aa57"];
+      for (let i = 0; i < 14; i++) {
+        const leaf = document.createElement("div");
+        leaf.className = "v12-leaf";
+        leaf.style.left = `${Math.random() * 100}%`;
+        leaf.style.background = leafColors[i % leafColors.length];
+        leaf.style.animationDuration = `${7 + Math.random() * 7}s`;
+        leaf.style.animationDelay = `${Math.random() * 5}s`;
+        leavesContainer.appendChild(leaf);
+      }
+    }
+
+    const introEl = document.getElementById("letterbox-intro");
+    const stage1 = document.getElementById("v12-stage-1");
+    const stage2 = document.getElementById("v12-stage-2");
+    const stage3 = document.getElementById("v12-stage-3");
+    const dot1 = document.getElementById("dot-step-1");
+    const dot2 = document.getElementById("dot-step-2");
+    const dot3 = document.getElementById("dot-step-3");
+    const heroEnvelope = document.getElementById("hero-envelope");
+    const waxSealBtn = document.getElementById("wax-seal-btn");
+    const strikeBtn = document.getElementById("v12-strike-match-btn");
+    const pullCard = document.getElementById("v12-pull-letter");
+    const typedQuoteEl = document.getElementById("v12-typed-quote");
+
+    let typeTimer = null;
+    let waxMelted = false;
+    let letterPulled = false;
+
+    function setIntroStage(num) {
+      [stage1, stage2, stage3].forEach((el, i) => {
+        if (el) el.classList.toggle("active", i + 1 === num);
+      });
+      [dot1, dot2, dot3].forEach((d, i) => {
+        if (d) d.classList.toggle("active", i + 1 <= num);
+      });
+    }
+
+    function startCalligraphyTypewriter() {
+      if (typeTimer) clearTimeout(typeTimer);
+      if (!typedQuoteEl) return;
+      const quote = getLang() === "en"
+        ? "“Some feelings deserve a letter…”"
+        : "“কারণ কিছু অনুভূতি একটি চিঠিরই দাবি রাখে…”";
+      let idx = 0;
+      typedQuoteEl.textContent = "";
+      const tick = () => {
+        if (idx >= quote.length) return;
+        idx++;
+        typedQuoteEl.textContent = quote.slice(0, idx);
+        soundEngine.playPenScratch("fountain");
+        typeTimer = setTimeout(tick, 48);
+      };
+      tick();
+    }
+
+    function runIntroSequence() {
+      if (typeTimer) clearTimeout(typeTimer);
+      waxMelted = false;
+      letterPulled = false;
+      if (introEl) introEl.classList.remove("hidden-intro");
+      if (heroEnvelope) heroEnvelope.classList.remove("opened");
+      if (waxSealBtn) waxSealBtn.classList.remove("melting");
+      if (strikeBtn) strikeBtn.textContent = "🔥 দিয়াশলাই জ্বালিয়ে মোম গলান";
+      const line2 = document.getElementById("v12-line-2");
+      if (line2) line2.textContent = "“দিয়াশলাইয়ের আগুনে মোমের সিল গলিয়ে খামটি খুলুন…”";
+      setIntroStage(1);
+    }
+
+    if (sessionStorage.getItem("chitthi_intro_seen") === "1") {
+      if (introEl) introEl.classList.add("hidden-intro");
+    } else {
+      runIntroSequence();
+    }
+
+    const collectBtn = document.getElementById("v12-collect-btn");
+    if (collectBtn) {
+      collectBtn.addEventListener("click", () => {
+        soundEngine.playPaperRustle();
+        setIntroStage(2);
+      });
+    }
+
+    function handleMeltSeal() {
+      if (waxMelted) return;
+      waxMelted = true;
+      soundEngine.playMatchStrike();
+      setTimeout(() => soundEngine.playWaxCrack(), 200);
+      if (waxSealBtn) waxSealBtn.classList.add("melting");
+      if (heroEnvelope) heroEnvelope.classList.add("opened");
+      if (strikeBtn) strikeBtn.textContent = "🔥 মোম গলে খাম খুলে গেছে!";
+      const line2 = document.getElementById("v12-line-2");
+      if (line2) line2.textContent = "“এবার খামের ভেতর থেকে চিঠিটি টেনে বের করুন…”";
+    }
+    if (strikeBtn) strikeBtn.addEventListener("click", handleMeltSeal);
+    if (waxSealBtn) waxSealBtn.addEventListener("click", handleMeltSeal);
+
+    function revealStage3() {
+      if (letterPulled) return;
+      letterPulled = true;
+      soundEngine.playPaperRustle();
+      setIntroStage(3);
+      setTimeout(startCalligraphyTypewriter, 280);
+    }
+
+    if (pullCard) {
+      let dragStartY = null;
+      pullCard.addEventListener("pointerdown", (e) => {
+        dragStartY = e.clientY;
+        pullCard.setPointerCapture(e.pointerId);
+      });
+      pullCard.addEventListener("pointermove", (e) => {
+        if (dragStartY === null) return;
+        const dy = e.clientY - dragStartY;
+        if (dy < 0) {
+          pullCard.style.transform = `translateY(${Math.max(-145, -62 + dy)}px)`;
+          if (dy < -48) revealStage3();
+        }
+      });
+      pullCard.addEventListener("pointerup", () => {
+        dragStartY = null;
+        revealStage3();
+      });
+      pullCard.addEventListener("click", revealStage3);
+    }
+
+    function finishIntro() {
+      if (typeTimer) clearTimeout(typeTimer);
+      soundEngine.playPaperRustle();
+      sessionStorage.setItem("chitthi_intro_seen", "1");
+      if (introEl) introEl.classList.add("hidden-intro");
+    }
+
+    const enterBtn = document.getElementById("enter-chitthi-btn");
+    if (enterBtn) enterBtn.addEventListener("click", finishIntro);
+    const skipBtn = document.getElementById("skip-intro-btn");
+    if (skipBtn) skipBtn.addEventListener("click", finishIntro);
+
+    const replayBtn = document.getElementById("replay-intro-btn");
+    if (replayBtn) {
+      replayBtn.addEventListener("click", () => {
+        sessionStorage.removeItem("chitthi_intro_seen");
+        runIntroSequence();
+      });
+    }
+
+    ["lang-toggle-btn", "intro-lang-btn"].forEach((id) => {
+      const btn = document.getElementById(id);
+      if (btn) {
+        btn.addEventListener("click", () => {
+          toggleLang();
+          refreshMusicUI();
+        });
+      }
+    });
+
+    (async function checkPostmanBell() {
+      try {
+        const myBox = JSON.parse(localStorage.getItem("chitthi_my_postbox") || "null");
+        let notify = false;
+        if (myBox && myBox.handle) {
+          const inbox = await getLettersForPostbox(myBox.handle);
+          if (inbox.length > 0) notify = true;
+        }
+        const sent = getSentHistory();
+        for (const item of sent.slice(0, 3)) {
+          const full = await getLetterByStampCode(item.stampCode);
+          if (full && full.reply && full.reply.text) { notify = true; break; }
+        }
+        if (notify) {
+          const bellBanner = document.getElementById("postman-bell-banner");
+          if (bellBanner) bellBanner.style.display = "block";
+          soundEngine.playPostmanBell();
+        }
+      } catch (_) {}
+    })();
+  </script>
+</body>
+</html>

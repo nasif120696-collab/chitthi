@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>চিঠি লিখুন (Write) — চিঠি (CHITTHI)</title>
+  <link rel="icon" type="image/png" href="assets/chitthi-favicon.png" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="write-rain-layer" class="rain-overlay-layer"></div>
+
+  <header class="postal-nav">
+    <a href="index.html" class="brand-logo">
+      <img src="assets/chitthi-logo.png" alt="Chitthi Emblem" class="brand-logo-img" />
+      <div class="brand-text-wrap">
+        <span class="brand-name" data-i18n="brand_name">চিঠি</span>
+        <span class="brand-sub" data-i18n="brand_sub">অনুভূতির ডাকঘর</span>
+      </div>
+    </a>
+
+    <nav class="nav-links">
+      <a href="index.html" class="nav-link" data-i18n="nav_home">ডাকঘর</a>
+      <a href="write.html" class="nav-link active" data-i18n="nav_write">চিঠি লিখুন</a>
+      <a href="postbox.html" class="nav-link" data-i18n="nav_postbox">পোস্টবক্স ও উৎসব</a>
+      <a href="postbox.html#track" class="nav-link" data-i18n="nav_track">গোপন কোড</a>
+      <a href="#how-to-send" class="nav-link" data-open-guide="direct" data-i18n="nav_guide">নির্দেশিকা</a>
+    </nav>
+
+    <div class="nav-controls">
+      <select id="write-page-bg-select" class="pill-btn" title="পুরো পেজের ব্যাকগ্রাউন্ড থিম" style="cursor:pointer;">
+        <option value="default">🎨 ব্যাকগ্রাউন্ড: ওয়ালনাট</option>
+        <option value="bg-art-chitthi-box">📮 চিঠি বক্স (১১.১১)</option>
+        <option value="bg-art-sunlit-window">🪟 রোদেলা জানালা</option>
+        <option value="bg-art-calcutta-postbox">🏛️ পুরনো ডাকবাক্স</option>
+        <option value="bg-art-kundakali">🌿 কুন্দকলি দেয়াল</option>
+        <option value="bg-art-vintage-tv">📺 রেট্রো বাংলাদেশ</option>
+      </select>
+      <button id="room-light-btn" class="pill-btn" type="button">🕯️ আলো: উজ্জ্বল</button>
+      <button id="sound-toggle-btn" class="pill-btn" type="button">🎵 <span data-i18n="sound_off">আবহ সঙ্গীত</span></button>
+      <button id="lang-toggle-btn" class="pill-btn" type="button">বাংলা | EN</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <div style="margin-bottom:1.4rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.8rem;">
+      <div>
+        <h1 class="serif-title" style="font-size:1.95rem; color:var(--gold-bright);" data-i18n="desk_title">রাইটিং ডেস্ক</h1>
+        <p id="target-box-banner" style="color:var(--cream-aged); font-size:0.94rem; display:none;"></p>
+      </div>
+
+      <!-- Pen Toggle + Song Selector + Local MP3 Upload -->
+      <div style="display:flex; align-items:center; gap:0.55rem; flex-wrap:wrap;">
+        <button type="button" class="pill-btn" data-open-guide="direct" title="How to Write & Send Tutorial">
+          📖 <span data-i18n="cta_guide">কীভাবে পাঠাবেন?</span>
+        </button>
+        <button type="button" id="toggle-pen-anim-btn" class="pill-btn active-sound" title="Toggle Pen & Hand Animation">
+          ✒️ <span id="pen-toggle-label">কলম ও হাত: চালু</span>
+        </button>
+        <select id="music-track-select" class="vintage-select" style="width:auto; max-width:240px; padding:0.44rem 0.75rem;"></select>
+        <label class="pill-btn" style="cursor:pointer;">
+          <span data-i18n="upload_mp3_btn">+ নিজের MP3 গান</span>
+          <input type="file" id="mp3-upload-input" accept="audio/*" style="display:none;" />
+        </label>
+      </div>
+    </div>
+
+        <!-- Multi-Page Controller + Draft Auto-Save Bar -->
+    <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:0.65rem; margin-bottom:1rem; padding:0.7rem 1rem; background:rgba(34,21,13,0.88); border:1px solid var(--gold-dim); border-radius:14px;">
+      <div style="display:flex; align-items:center; gap:0.45rem; flex-wrap:wrap;">
+        <span id="draft-status-badge" style="font-size:0.84rem; color:var(--gold-bright);">💾 ড্রাফট অটো-সেভ চালু</span>
+        <button type="button" id="manual-save-draft-btn" class="pill-btn" style="font-size:0.78rem;">ড্রাফট সেভ</button>
+        <button type="button" id="clear-draft-btn" class="pill-btn" style="font-size:0.78rem; opacity:0.82;">মুছুন</button>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap;" id="page-tabs-bar">
+        <button type="button" id="prev-edit-page-btn" class="pill-btn" style="padding:0.35rem 0.7rem; font-size:0.8rem;">◀</button>
+        <button type="button" class="pill-btn active-sound page-tab-btn" data-page-idx="0">পাতা ১</button>
+        <button type="button" id="next-edit-page-btn" class="pill-btn" style="padding:0.35rem 0.7rem; font-size:0.8rem;">▶</button>
+        <button type="button" id="add-page-btn" class="pill-btn" style="border-style:dashed; color:var(--gold-bright);">+ নতুন পাতা</button>
+        <button type="button" id="delete-page-btn" class="pill-btn" style="display:none; font-size:0.78rem; color:#f28b82;">পাতা বাদ দিন</button>
+      </div>
+    </div>
+
+    <div class="desk-layout">
+      <!-- Left: Sunlit Antique Walnut Desk Scene with Kraft Envelope, Bouquet, Stamps & Black-Gold Fountain Pen -->
+      <div class="desk-scene-stage" id="desk-scene-stage">
+        <div class="desk-curtain-drape" aria-hidden="true"></div>
+
+        <!-- Quick Per-Page Controls Directly on the Writing Desk -->
+        <div style="position:relative; z-index:18; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:0.45rem; max-width:650px; margin:0 auto 0.85rem; padding:0.45rem 0.75rem; background:rgba(20,12,7,0.82); border:1px solid var(--gold-dim); border-radius:12px; backdrop-filter:blur(6px);">
+          <div style="display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap;">
+            <span style="font-size:0.76rem; color:var(--gold-bright); font-weight:700;" id="active-page-badge">পাতা ১ এর সাজ:</span>
+            <select id="desk-theme-select" class="vintage-select" style="width:auto; padding:0.28rem 0.6rem; font-size:0.78rem;">
+              <option value="walnut">🪵 ওয়ালনাট টেবিল</option>
+              <option value="chitthi-box">📮 চিঠি বক্স (১১.১১)</option>
+              <option value="sunlit-window">🪟 রোদেলা জানালা</option>
+              <option value="calcutta-postbox">🏛️ পুরনো ডাকবাক্স</option>
+              <option value="kundakali">🌿 কুন্দকলি স্মৃতি</option>
+              <option value="vintage-tv">📺 রেট্রো বাংলাদেশ</option>
+            </select>
+            <select id="quick-font-select" class="vintage-select" style="width:auto; padding:0.28rem 0.6rem; font-size:0.78rem;">
+              <option value="font-noto-serif">✍️ ফন্ট: ক্লাসিক সেরিফ</option>
+              <option value="font-galada">🖋️ ফন্ট: গালাদা ক্যালিগ্রাফি</option>
+              <option value="font-atma">🌸 ফন্ট: আত্মা (হাতের লেখা)</option>
+              <option value="font-tiro">📜 ফন্ট: তিরো বাংলা সাহিত্য</option>
+              <option value="font-tiro-italic">✒️ ফন্ট: তিরো ইটালিক</option>
+              <option value="font-baloo">💫 ফন্ট: বালু দা ২</option>
+              <option value="font-mina">🌿 ফন্ট: মিনা নস্টালজিক</option>
+              <option value="font-anek">📖 ফন্ট: অনেক বাংলা</option>
+              <option value="font-hind">✨ ফন্ট: হিন্দ শিলিগুড়ি</option>
+              <option value="font-caveat">🕯️ Font: Caveat Handwritten</option>
+              <option value="font-dancing">💌 Font: Dancing Script</option>
+              <option value="font-great-vibes">👑 Font: Great Vibes Royal</option>
+            </select>
+          </div>
+          <label style="display:flex; align-items:center; gap:0.35rem; font-size:0.74rem; color:var(--cream-aged); cursor:pointer;">
+            <input type="checkbox" id="apply-all-pages-check" checked style="accent-color:var(--gold-bright);" /> সব পাতায় প্রযোজ্য
+          </label>
+        </div>
+
+        <!-- Glowing Brass Candle Beside Desk -->
+        <div class="desk-candle-rig" id="desk-candle-widget" title="মোমবাতি ও ঘরের আলো অন/অফ করুন">
+          <div class="candle-aura"></div>
+          <svg width="50" height="92" viewBox="0 0 58 108" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g class="candle-flame-group">
+              <path d="M29 6 C35 16, 37 25, 29 31 C21 25, 23 16, 29 6 Z" fill="#ff9d2e"/>
+              <path d="M29 12 C32.5 18, 33.5 24, 29 28 C24.5 24, 25.5 18, 29 12 Z" fill="#fff4b8"/>
+            </g>
+            <line x1="29" y1="30" x2="29" y2="36" stroke="#1c1109" stroke-width="2"/>
+            <rect x="20" y="36" width="18" height="46" rx="4" fill="#f7ebd2" stroke="#d4bc94" stroke-width="1"/>
+            <path d="M22 36 Q24 47 26 39 Q29 51 32 38 Q35 45 36 36" fill="#fffaf0"/>
+            <ellipse cx="29" cy="84" rx="18" ry="5" fill="#d4a64a"/>
+            <rect x="25" y="84" width="8" height="12" fill="#b3822e"/>
+            <ellipse cx="29" cy="98" rx="22" ry="6" fill="#8f631e" stroke="#f2cf7e" stroke-width="1"/>
+          </svg>
+          <span id="candle-label" style="font-size:0.66rem; color:var(--gold-bright); background:rgba(16,9,4,0.78); padding:2px 7px; border-radius:999px; border:1px solid var(--gold-dim);">আলো নিভান</span>
+        </div>
+
+      <!-- Dried Golden & Amber Flower Bouquet (Top-Right Desk Corner) -->
+      <svg class="desk-flower-bouquet" viewBox="0 0 260 240" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <radialGradient id="flowerAmber" cx="40%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#f7d37e"/>
+            <stop offset="55%" stop-color="#c98b36"/>
+            <stop offset="100%" stop-color="#6e4214"/>
+          </radialGradient>
+          <radialGradient id="flowerCream" cx="40%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#fff4d6"/>
+            <stop offset="60%" stop-color="#d8b679"/>
+            <stop offset="100%" stop-color="#876332"/>
+          </radialGradient>
+          <radialGradient id="flowerRust" cx="40%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#e39d52"/>
+            <stop offset="60%" stop-color="#9e4d1e"/>
+            <stop offset="100%" stop-color="#4f2008"/>
+          </radialGradient>
+        </defs>
+        <!-- Tied Stems -->
+        <g stroke="#7d582d" stroke-width="2.4" stroke-linecap="round">
+          <path d="M250 18 C205 55, 165 92, 115 135"/>
+          <path d="M255 28 C210 68, 175 108, 138 158"/>
+          <path d="M242 10 C192 42, 148 72, 92 105"/>
+          <path d="M258 42 C218 84, 190 124, 168 175"/>
+          <path d="M235 5 C182 32, 132 54, 78 76"/>
+        </g>
+        <!-- Twine Knot -->
+        <path d="M204 42 Q216 58 224 64 M200 48 Q212 64 220 70" stroke="#c8a254" stroke-width="3.5" stroke-linecap="round"/>
+        <!-- Baby's Breath Sprigs -->
+        <g fill="#f5e7c6">
+          <circle cx="82" cy="74" r="4"/><circle cx="72" cy="82" r="3.5"/><circle cx="90" cy="64" r="3.5"/>
+          <circle cx="96" cy="104" r="4.5"/><circle cx="84" cy="112" r="3.5"/><circle cx="106" cy="96" r="3.5"/>
+          <circle cx="170" cy="172" r="4.5"/><circle cx="160" cy="182" r="3.5"/><circle cx="180" cy="164" r="3.5"/>
+        </g>
+        <!-- Large Dried Chrysanthemums & Marigolds -->
+        <g>
+          <!-- Bloom 1 (Amber Gold) -->
+          <circle cx="122" cy="128" r="24" fill="url(#flowerAmber)"/>
+          <circle cx="122" cy="128" r="16" fill="#e6b253" opacity="0.75"/>
+          <circle cx="122" cy="128" r="8" fill="#734312"/>
+          <!-- Bloom 2 (Warm Cream) -->
+          <circle cx="154" cy="96" r="22" fill="url(#flowerCream)"/>
+          <circle cx="154" cy="96" r="14" fill="#f5dfb0" opacity="0.8"/>
+          <circle cx="154" cy="96" r="6" fill="#8f6834"/>
+          <!-- Bloom 3 (Burnt Sienna / Rust) -->
+          <circle cx="146" cy="148" r="20" fill="url(#flowerRust)"/>
+          <circle cx="146" cy="148" r="11" fill="#c96b2b" opacity="0.75"/>
+          <circle cx="146" cy="148" r="5" fill="#471c06"/>
+          <!-- Bloom 4 (Small Golden Bud) -->
+          <circle cx="110" cy="92" r="15" fill="url(#flowerAmber)"/>
+          <circle cx="110" cy="92" r="6" fill="#5e340b"/>
+          <!-- Bloom 5 (Right Accent) -->
+          <circle cx="182" cy="126" r="18" fill="url(#flowerCream)"/>
+          <circle cx="182" cy="126" r="7" fill="#7c5626"/>
+        </g>
+      </svg>
+
+
+      <!-- Two Serrated Vintage Postage Stamps on Walnut Surface -->
+      <div class="desk-stamps-cluster" aria-hidden="true">
+        <div class="vintage-postage-stamp stamp-sepia">
+          <div class="stamp-art">
+            <div>
+              <div style="font-size:0.95rem;">🏛️</div>
+              <div>বাংলাদেশ</div>
+            </div>
+          </div>
+          <div class="stamp-caption">২০ পয়সা • POST</div>
+        </div>
+        <div class="vintage-postage-stamp stamp-sage">
+          <div class="stamp-art">
+            <div>
+              <div style="font-size:0.95rem;">🌿</div>
+              <div>ডাক বিভাগ</div>
+            </div>
+          </div>
+          <div class="stamp-caption">৫০ পয়সা • BD</div>
+        </div>
+      </div>
+
+
+        <div class="kraft-envelope-stack">
+          <div class="kraft-envelope-backing" aria-hidden="true"></div>
+
+          <div class="parchment-sheet has-coffee-stains" id="parchment-sheet">
+            <div class="real-stamp-card" id="preview-real-stamp">
+              <img id="preview-real-stamp-img" src="assets/stamp-dhaka-curzon.jpg" alt="Vintage Postage Stamp" />
+            </div>
+            <div class="paper-postmark" id="paper-postmark">
+              <span>বাংলাদেশ ডাক</span>
+              <span id="postmark-city-display">ঢাকা জিপিও</span>
+              <span id="postmark-date-display">১৭ নভে ২০২৬</span>
+              <span id="postmark-mood-display">সোনালি গোধূলি</span>
+            </div>
+
+            <div class="letter-header-inputs">
+              <input type="text" id="to-name" class="paper-input" data-i18n-placeholder="to_placeholder" placeholder="প্রাপকের নাম (যেমন: প্রিয় মানুষ / বন্ধু)..." />
+              <input type="text" id="from-name" class="paper-input" data-i18n-placeholder="from_placeholder" placeholder="প্রেরকের নাম (অথবা বেনামী রাখুন)..." />
+              <input type="text" id="envelope-address" class="paper-input" style="font-size:0.88rem; font-weight:400;" placeholder="খামের ওপর ঠিকানা (যেমন: ধানমন্ডি, ঢাকা / খুলনা হল)..." />
+            </div>
+
+            <div class="writing-area-wrapper" id="writing-wrapper">
+              <textarea id="letter-body" class="letter-textarea" data-i18n-placeholder="letter_placeholder" placeholder="এখানে আপনার মনের কথা লিখুন... কলম ও হাত আপনার সাথে সাথে চলবে..."></textarea>
+              <div id="caret-mirror" class="caret-mirror" aria-hidden="true"></div>
+
+          <!-- Luxury Black-and-Gold Fountain Pen + Articulated Artist Hand (image_2c7746 style) -->
+          <svg id="animated-hand-pen" class="fountain-pen-rig resting-on-desk" viewBox="0 0 235 235" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="animated-hand-pen_goldNib" x1="14" y1="220" x2="48" y2="186" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#fff4c4"/>
+                <stop offset="45%" stop-color="#dfb152"/>
+                <stop offset="100%" stop-color="#8a6016"/>
+              </linearGradient>
+              <linearGradient id="animated-hand-pen_blackLacquer" x1="38" y1="192" x2="178" y2="52" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#0d0c0b"/>
+                <stop offset="30%" stop-color="#2c2926"/>
+                <stop offset="52%" stop-color="#11100f"/>
+                <stop offset="85%" stop-color="#24211e"/>
+                <stop offset="100%" stop-color="#080807"/>
+              </linearGradient>
+              <linearGradient id="animated-hand-pen_goldTrim" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#fae39c"/>
+                <stop offset="50%" stop-color="#c99738"/>
+                <stop offset="100%" stop-color="#7d5612"/>
+              </linearGradient>
+              <linearGradient id="animated-hand-pen_handSkin" x1="92" y1="88" x2="205" y2="155" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#f2ccb0"/>
+                <stop offset="62%" stop-color="#dfab84"/>
+                <stop offset="100%" stop-color="#be865c"/>
+              </linearGradient>
+              <linearGradient id="animated-hand-pen_handShadow" x1="80" y1="130" x2="145" y2="175" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#cf976e"/>
+                <stop offset="100%" stop-color="#a87048"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Soft Realistic Shadow Cast onto Cotton Parchment -->
+            <ellipse class="pen-desk-shadow" cx="105" cy="204" rx="86" ry="11" fill="rgba(22, 11, 4, 0.24)" transform="rotate(-38 105 204)"/>
+
+            <!-- Back Fingers (Ring & Little Finger) Only Visible While Writing -->
+            <g class="writer-hand-group">
+              <path d="M112 154 C94 163, 78 176, 86 185 C94 193, 116 181, 134 168" fill="url(#animated-hand-pen_handShadow)" stroke="#8c5834" stroke-width="1.4"/>
+              <path d="M102 136 C82 146, 66 161, 75 171 C84 179, 108 165, 126 152" fill="url(#animated-hand-pen_handShadow)" stroke="#8c5834" stroke-width="1.5"/>
+            </g>
+
+            <!-- Engraved 24K Gold Fountain Pen Nib (Tip at 14, 220) -->
+            <path d="M14 220 L34 191 L49 206 Z" fill="url(#animated-hand-pen_goldNib)" stroke="#734e10" stroke-width="0.9"/>
+            <line x1="14" y1="220" x2="32" y2="203" stroke="#2c1e16" stroke-width="1.1"/>
+            <circle cx="33" cy="202" r="2" fill="#2c1e16"/>
+
+            <!-- Glossy Black Lacquer Grip & Barrel + Gold Bands -->
+            <path d="M34 191 L48 177 L63 192 L49 206 Z" fill="#171513"/>
+            <rect x="46" y="176" width="22" height="4" rx="1.5" transform="rotate(-45 46 176)" fill="url(#animated-hand-pen_goldTrim)"/>
+            <path d="M48 177 L166 59 L183 76 L63 192 Z" fill="url(#animated-hand-pen_blackLacquer)"/>
+            <!-- Specular Highlight Along Black Lacquer Barrel -->
+            <line x1="56" y1="178" x2="168" y2="66" stroke="rgba(255,255,255,0.22)" stroke-width="2" stroke-linecap="round"/>
+            <!-- Twin Gold Cap Rings & Gold Clip -->
+            <rect x="114" y="108" width="24" height="4.5" rx="1.5" transform="rotate(-45 114 108)" fill="url(#animated-hand-pen_goldTrim)"/>
+            <rect x="120" y="102" width="24" height="3" rx="1" transform="rotate(-45 120 102)" fill="url(#animated-hand-pen_goldTrim)"/>
+            <path d="M126 98 L166 58 L171 63 L131 103 Z" fill="url(#animated-hand-pen_goldTrim)"/>
+            <!-- Rounded Black & Gold Finial Cap -->
+            <path d="M166 59 C174 51, 185 53, 188 60 C191 67, 188 73, 183 76 Z" fill="#141312" stroke="#c99738" stroke-width="1.2"/>
+
+            <!-- Articulated Artist Hand & Tailored Cuff (Fades in smoothly while typing) -->
+            <g class="writer-hand-group">
+              <path d="M116 96 C136 78, 168 58, 200 48 L228 98 C194 122, 156 148, 120 158 C102 146, 101 115, 116 96 Z" fill="url(#animated-hand-pen_handSkin)" stroke="#8c5834" stroke-width="1.6"/>
+              <!-- Index Finger Resting Along Pen Grip -->
+              <path d="M126 98 C106 109, 80 131, 69 149 C64 158, 73 165, 84 159 C100 149, 122 130, 139 117" fill="url(#animated-hand-pen_handSkin)" stroke="#8c5834" stroke-width="1.6" stroke-linecap="round"/>
+              <path d="M100 128 Q104 132 108 135" stroke="#9e6742" stroke-width="1.1" stroke-linecap="round"/>
+              <!-- Opposing Thumb -->
+              <path d="M122 139 C102 144, 82 155, 80 165 C78 173, 91 177, 109 169 C124 162, 137 152, 146 144" fill="url(#animated-hand-pen_handSkin)" stroke="#8c5834" stroke-width="1.6" stroke-linecap="round"/>
+              <!-- Cream Shirt Cuff & Dark Walnut Sleeve -->
+              <path d="M188 49 L199 44 L231 99 L220 105 Z" fill="#f6eedc" stroke="#c5a878" stroke-width="1.3"/>
+              <path d="M196 42 L234 23 L235 102 L225 108 Z" fill="#2b180e" stroke="#c8a254" stroke-width="1.8"/>
+              <circle cx="221" cy="84" r="3.5" fill="#e5c171"/>
+            </g>
+          </svg>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Customization & Unique Feature Controls -->
+      <aside class="desk-sidebar">
+        <!-- 1. Paper Style -->
+        <div class="control-panel">
+          <h4>📜 <span data-i18n="paper_style">কাগজের ধরন</span></h4>
+          <div class="swatch-row">
+            <button type="button" class="swatch-btn selected" data-paper="cream" style="background:#f6eedc;" title="Antique Cream"></button>
+            <button type="button" class="swatch-btn" data-paper="aged" style="background:#e6cfa3;" title="Old Manuscript"></button>
+            <button type="button" class="swatch-btn" data-paper="rose" style="background:#f5e2dc;" title="Dried Rose"></button>
+            <button type="button" class="swatch-btn" data-paper="mint" style="background:#e3ece2;" title="Monsoon Sage"></button>
+            <button type="button" class="swatch-btn" data-paper="night" style="background:#1f2430;" title="Midnight Ink"></button>
+            <button type="button" class="swatch-btn" data-paper="kundakali" style="background:url('assets/theme-kundakali-wall.jpg') center/cover;" title="কুন্দকলি আর্ট পেপার"></button>
+            <button type="button" class="swatch-btn" data-paper="chitthi-gold" style="background:url('assets/theme-chitthi-box.jpg') center/cover;" title="চিঠি বক্স সোনালি পেপার"></button>
+          </div>
+        </div>
+
+        <!-- 2. Wax Seal Color -->
+        <div class="control-panel">
+          <h4>🕯️ <span data-i18n="wax_color">মোমের সিলের রং</span></h4>
+          <div class="swatch-row">
+            <button type="button" class="swatch-btn selected" data-wax="crimson" style="background:#8f1d24;" title="Royal Crimson"></button>
+            <button type="button" class="swatch-btn" data-wax="emerald" style="background:#1e563f;" title="Forest Emerald"></button>
+            <button type="button" class="swatch-btn" data-wax="royal" style="background:#233b6e;" title="Midnight Sapphire"></button>
+            <button type="button" class="swatch-btn" data-wax="gold" style="background:#a67c2e;" title="Antique Gold"></button>
+          </div>
+        </div>
+
+        <!-- 3. City & Live Weather Postmark -->
+        <div class="control-panel">
+          <h4>🏤 <span data-i18n="postmark_city">ডাকঘর ও লাইভ আবহাওয়া</span></h4>
+          <div style="display:flex; flex-direction:column; gap:0.55rem;">
+            <select id="city-select" class="vintage-select">
+              <option value="ঢাকা জিপিও">ঢাকা জিপিও (Dhaka GPO)</option>
+              <option value="খুলনা জিপিও">খুলনা জিপিও (Khulna GPO)</option>
+              <option value="নরসিংদী ডাকঘর">নরসিংদী ডাকঘর (Narsingdi)</option>
+              <option value="চট্টগ্রাম জিপিও">চট্টগ্রাম জিপিও (Chattogram)</option>
+              <option value="সিলেট ডাকঘর">সিলেট ডাকঘর (Sylhet)</option>
+              <option value="রাজশাহী জিপিও">রাজশাহী জিপিও (Rajshahi)</option>
+            </select>
+            <select id="weather-select" class="vintage-select">
+              <option value="সোনালি গোধূলি">সোনালি গোধূলি (Golden Hour)</option>
+              <option value="কুয়াশাচ্ছন্ন রাত">কুয়াশাচ্ছন্ন রাত (Misty Night)</option>
+              <option value="বৃষ্টিভেজা বিকেল">বৃষ্টিভেজা বিকেল (Rainy Afternoon)</option>
+              <option value="জ্যোৎস্না রাত">জ্যোৎস্না রাত (Moonlit Night)</option>
+            </select>
+            <button type="button" id="auto-weather-btn" class="pill-btn" style="justify-content:center;" data-i18n="auto_weather_btn">
+              📍 বর্তমান আবহাওয়া বসান
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. Song Dedication inside Envelope -->
+        <div class="control-panel">
+          <h4>🎶 <span data-i18n="song_dedicate_label">চিঠির সাথে গান জুড়ে দিন</span></h4>
+          <p style="font-size:0.8rem; color:var(--cream-dark); margin-bottom:0.55rem;">
+            ওপরের ড্রপডাউন থেকে সিলেক্ট করা গানটি খামের ভেতরে সংযুক্ত থাকবে।
+          </p>
+          <input type="url" id="custom-song-url" class="vintage-input" placeholder="ঐচ্ছিক: সরাসরি MP3 লিংক (https://...mp3)" style="font-size:0.82rem;" />
+        </div>
+
+        <!-- 5. Time-Lock Capsule -->
+        <div class="control-panel">
+          <h4>⏳ <span data-i18n="timelock_label">সময়-তালা (Time-Lock)</span></h4>
+          <input type="datetime-local" id="unlock-time" class="vintage-input" />
+          <p style="font-size:0.78rem; color:var(--cream-dark); margin-top:0.4rem;" data-i18n="timelock_hint">
+            ঐচ্ছিক: নির্ধারিত সময়ের আগে প্রাপক চিঠি খুলতে পারবে না
+          </p>
+        </div>
+
+        <!-- V11: Pen Ink, Real Vintage Stamp & Perfume Aroma -->
+        <div class="control-panel">
+          <h4>🖋️ কালি, ডাকটিকিট ও সুবাস</h4>
+          <div style="display:flex; flex-direction:column; gap:0.55rem;">
+            <select id="pen-mode-select" class="vintage-select">
+              <option value="fountain">ফাউন্টেন পেন (সেপিয়া কালো কালি)</option>
+              <option value="quill">রাজকীয় পালকের কলম (নীল কালি)</option>
+              <option value="crimson-ink">আলতা লাল কালি (Crimson Ink)</option>
+              <option value="pencil">ভিন্টেজ পেন্সিল (Graphite Pencil)</option>
+            </select>
+            <select id="stamp-select" class="vintage-select">
+              <option value="dhaka_curzon">🏛️ ঢাকা কার্জন হল ডাকটিকিট</option>
+              <option value="bangladesh_85">🇧🇩 বাংলাদেশ ৮৫ এয়ার মেইল (স্মৃতিসৌধ)</option>
+            </select>
+            <select id="aroma-select" class="vintage-select">
+              <option value="none">🌹 সুবাস: সাধারণ কাগজ</option>
+              <option value="rose">🌹 গোলাপ পাপড়ির সুবাস (Rose Petal)</option>
+              <option value="library">📚 পুরনো লাইব্রেরি (Old Library)</option>
+              <option value="rain">🌧️ বৃষ্টিভেজা মাটির ঘ্রাণ (Petrichor)</option>
+            </select>
+            <label class="toggle-row" style="cursor:pointer; margin-top:0.2rem;">
+              <span>☕ কাগজে কফির দাগ ও ভাঁজ</span>
+              <input type="checkbox" id="coffee-stain-toggle" checked style="width:17px; height:17px; accent-color:var(--gold-bright);" />
+            </label>
+          </div>
+        </div>
+
+        <!-- V11: Voice Note Recorder Inside Envelope -->
+        <div class="control-panel">
+          <h4>🎙️ খামের ভেতরে ভয়েস নোট (ঐচ্ছিক)</h4>
+          <p style="font-size:0.78rem; color:var(--cream-dark); margin-bottom:0.5rem;">
+            সর্বোচ্চ ১৫ সেকেন্ডের নিজের গলার বার্তা জুড়ে দিন
+          </p>
+          <div style="display:flex; gap:0.5rem; align-items:center;">
+            <button type="button" id="record-voice-btn" class="pill-btn" style="flex:1; justify-content:center;">● রেকর্ড শুরু</button>
+            <button type="button" id="clear-voice-btn" class="pill-btn" style="display:none;">মুছুন</button>
+          </div>
+          <audio id="voice-preview-audio" controls style="display:none; width:100%; margin-top:0.55rem; height:34px;"></audio>
+        </div>
+
+        <!-- 6. Burn After Reading -->
+        <div class="control-panel">
+          <label class="toggle-row" style="cursor:pointer;">
+            <span>🔥 <span data-i18n="burn_label">পড়ার পর পুড়ে যাবে</span></span>
+            <input type="checkbox" id="burn-toggle" style="width:18px; height:18px; accent-color:var(--wax-crimson);" />
+          </label>
+        </div>
+
+        <!-- Seal & Send Button -->
+        <button type="button" id="seal-send-btn" class="btn-crimson" style="width:100%; padding:1rem;">
+          <span>🕯️</span>
+          <span data-i18n="seal_send_btn">মোমের সিল দিয়ে চিঠি পাঠান</span>
+        </button>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="postal-footer">
+    <div class="footer-dev-mini">
+      <img src="assets/nasif-portrait.jpg" alt="Mushfiqul Alam Nasif" />
+      <div>
+        <div style="font-weight:700; color:var(--gold-bright);" data-i18n="footer_crafted">
+          ভালোবাসা ও যত্নে নির্মিত — মুশফিকুল আলম নাসিফ
+        </div>
+        <div style="font-size:0.78rem; color:var(--cream-dark);">
+          CSE, BAUST Khulna • Some feelings deserve a letter.
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-links">
+      <a href="https://github.com/nasif120696-collab" target="_blank" rel="noopener noreferrer" class="social-pill" style="padding:0.38rem 0.85rem; font-size:0.8rem;">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.69-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 2.9-.39c.98 0 1.97.13 2.9.39 2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14 0 1.55-.01 2.8-.01 3.18 0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
+        <span>GitHub</span>
+      </a>
+      <a href="https://www.linkedin.com/in/mushfiqulalamnasif" target="_blank" rel="noopener noreferrer" class="social-pill" style="padding:0.38rem 0.85rem; font-size:0.8rem;">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 3A2 2 0 0 1 21 5v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77Z"/></svg>
+        <span>LinkedIn</span>
+      </a>
+      <a href="mailto:mushfiqulalam14@gmail.com" class="social-pill" style="padding:0.38rem 0.85rem; font-size:0.8rem;">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg>
+        <span>Gmail</span>
+      </a>
+    </div>
+  </footer>
+
+
+  <!-- Sealed Success Modal -->
+  <div class="modal-backdrop" id="sent-modal">
+    <div class="modal-card">
+      <div style="text-align:center; margin-bottom:1rem;">
+        <div style="font-size:2.5rem;">🕯️✉️</div>
+        <h3 class="serif-title" style="font-size:1.5rem; color:var(--gold-bright);" data-i18n="modal_sent_title">
+          চিঠিটি সিলমোহর করা হয়েছে!
+        </h3>
+        <p style="font-size:0.92rem; color:var(--cream-aged); margin-top:0.35rem;" data-i18n="modal_sent_desc">
+          নিচের লিংকটি প্রাপককে পাঠান। আর গোপন কোডটি সংরক্ষণ করুন—প্রাপক উত্তর দিলে এই কোড দিয়ে দেখতে পাবেন।
+        </p>
+      </div>
+
+      <div style="background:rgba(0,0,0,0.45); border:1px dashed var(--gold-bright); border-radius:10px; padding:0.85rem; margin-bottom:0.85rem; text-align:center;">
+        <div style="font-size:0.78rem; color:var(--cream-dark);">SECRET STAMP CODE</div>
+        <div id="generated-stamp-code" style="font-size:1.45rem; font-weight:700; color:var(--gold-bright); letter-spacing:0.1em;">
+          #BD-0000
+        </div>
+      </div>
+
+      <input type="text" id="generated-share-link" class="vintage-input" readonly style="margin-bottom:0.9rem; font-size:0.84rem;" />
+
+      <div style="display:flex; gap:0.65rem; flex-wrap:wrap;">
+        <button type="button" id="copy-link-btn" class="btn-gold" style="flex:1; padding:0.7rem;" data-i18n="copy_link_btn">
+          চিঠির লিংক কপি করুন
+        </button>
+        <button type="button" id="copy-code-btn" class="btn-outline" style="flex:1; padding:0.7rem;" data-i18n="copy_code_btn">
+          গোপন কোড কপি করুন
+        </button>
+      </div>
+      <div style="text-align:center; margin-top:0.9rem;">
+        <button type="button" id="close-modal-btn" class="pill-btn">বন্ধ করুন / Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast-banner"></div>
+
+  <script type="module">
+    import { initUnifiedNavbar } from "./js/navbar.js";
+initUnifiedNavbar("write");
+    import { applyTranslations, toggleLang, getLang, t } from "./js/i18n.js";
+    import { soundEngine, setupGlobalMusicControls } from "./js/audio.js";
+    import { initTutorialGuide } from "./js/guide-modal.js";
+    import { saveLetter, getPostboxInfo } from "./js/storage.js";
+
+    applyTranslations();
+    const { refreshUI: refreshMusicUI } = setupGlobalMusicControls(getLang, t);
+    initTutorialGuide();
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 3000);
+    }
+
+    // Populate Song Dropdown from CUSTOM_SONGS + BUILTIN_TRACKS
+    const trackSelect = document.getElementById("music-track-select");
+    function renderSongOptions() {
+      const lang = getLang();
+      const tracks = soundEngine.getAllTracks();
+      trackSelect.innerHTML = tracks.map((tr) =>
+        `<option value="${tr.id}" ${tr.id === soundEngine.currentTrackId ? "selected" : ""}>${lang === "bn" ? tr.titleBn : tr.titleEn}</option>`
+      ).join("");
+    }
+    renderSongOptions();
+
+    trackSelect.addEventListener("change", (e) => {
+      soundEngine.setTrackById(e.target.value, true);
+    });
+
+    // Local MP3 file upload handler
+    document.getElementById("mp3-upload-input").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const newTrack = soundEngine.addLocalUploadedSong(file);
+      renderSongOptions();
+      if (!soundEngine.isPlaying) {
+        soundEngine.startAmbient();
+        const btn = document.getElementById("sound-toggle-btn");
+        btn.classList.add("active-sound");
+        btn.innerHTML = `🎶 <span>${t("sound_on")}</span>`;
+      } else {
+        soundEngine.setTrackById(newTrack.id);
+      }
+      showToast(`গান যুক্ত হয়েছে: ${file.name}`);
+    });
+
+    // Check if writing to a specific postbox (?to=handle)
+    const params = new URLSearchParams(window.location.search);
+    const targetBox = params.get("to") || "";
+    let boxUnlockAt = null;
+    let boxOccasion = "personal";
+
+    if (targetBox) {
+      const banner = document.getElementById("target-box-banner");
+      banner.style.display = "block";
+      banner.textContent = `📬 প্রাপকের পোস্টবক্স (Recipient Postbox): @${targetBox}`;
+      document.getElementById("to-name").value = `@${targetBox}`;
+
+      getPostboxInfo(targetBox).then((info) => {
+        if (info) {
+          boxOccasion = info.occasion || "personal";
+          if (info.batchUnlockAt) {
+            boxUnlockAt = info.batchUnlockAt;
+            banner.textContent += ` • ⏳ উৎসব আনলক নির্ধারিত আছে`;
+          }
+        }
+      });
+    }
+
+    // Format Postmark Date
+    const nowDate = new Date();
+    document.getElementById("postmark-date-display").textContent = nowDate.toLocaleDateString("bn-BD", {
+      day: "numeric",
+      month: "short",
+      year: "numeric"
+    });
+
+    const citySelect = document.getElementById("city-select");
+    const weatherSelect = document.getElementById("weather-select");
+    citySelect.addEventListener("change", () => {
+      document.getElementById("postmark-city-display").textContent = citySelect.value;
+    });
+    weatherSelect.addEventListener("change", () => {
+      document.getElementById("postmark-mood-display").textContent = weatherSelect.value;
+    });
+
+    // Live Weather Auto-Detect via Open-Meteo (No API key needed!)
+    document.getElementById("auto-weather-btn").addEventListener("click", () => {
+      if (!navigator.geolocation) {
+        showToast("ব্রাউজারে লোকেশন সাপোর্ট নেই।");
+        return;
+      }
+      showToast("আবহাওয়া জানা হচ্ছে... / Detecting weather...");
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        try {
+          const { latitude, longitude } = pos.coords;
+          const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
+          const data = await res.json();
+          const temp = Math.round(data.current_weather.temperature);
+          const code = data.current_weather.weathercode;
+          let desc = "নির্মল আকাশ";
+          if (code >= 51 && code <= 67) desc = "বৃষ্টিভেজা আকাশ";
+          else if (code >= 45 && code <= 48) desc = "কুয়াশাচ্ছন্ন";
+          else if (code >= 1 && code <= 3) desc = "মেঘলা বাতাস";
+          const stampText = `${temp}°C • ${desc}`;
+          document.getElementById("postmark-mood-display").textContent = stampText;
+          showToast(`লাইভ আবহাওয়া যুক্ত হয়েছে: ${stampText}`);
+        } catch (_) {
+          showToast("আবহাওয়া লোড করা যায়নি, ম্যানুয়ালি সিলেক্ট করুন।");
+        }
+      }, () => {
+        showToast("লোকেশন পারমিশন পাওয়া যায়নি।");
+      });
+    });
+
+    // Paper & Wax swatches
+    let selectedPaper = "cream";
+    let selectedWax = "crimson";
+    const sheet = document.getElementById("parchment-sheet");
+
+    document.querySelectorAll("[data-paper]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("[data-paper]").forEach((b) => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        selectedPaper = btn.dataset.paper;
+        sheet.className = "parchment-sheet" + (selectedPaper !== "cream" ? ` theme-${selectedPaper}` : "");
+        soundEngine.playPaperRustle();
+      });
+    });
+
+    document.querySelectorAll("[data-wax]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("[data-wax]").forEach((b) => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        selectedWax = btn.dataset.wax;
+        soundEngine.playMailboxClick();
+      });
+    });
+
+    // ======================================================================
+    // REALISTIC RESTING-TO-WRITING BLACK & GOLD FOUNTAIN PEN + HAND PHYSICS
+    // ======================================================================
+    const textarea = document.getElementById("letter-body");
+    const mirror = document.getElementById("caret-mirror");
+    const handPen = document.getElementById("animated-hand-pen");
+    const wrapper = document.getElementById("writing-wrapper");
+    const togglePenBtn = document.getElementById("toggle-pen-anim-btn");
+    const penToggleLabel = document.getElementById("pen-toggle-label");
+
+    let penAnimEnabled = true;
+    let keystrokes = [];
+    let lastKeyTime = Date.now();
+    let prevX = 24;
+    let idleTimeout = null;
+    let strokePhase = 0;
+
+    function syncDeskWidthVar() {
+      if (wrapper && handPen) {
+        handPen.style.setProperty("--desk-w", `${wrapper.clientWidth}px`);
+      }
+    }
+    syncDeskWidthVar();
+    window.addEventListener("resize", syncDeskWidthVar);
+
+    togglePenBtn.addEventListener("click", () => {
+      penAnimEnabled = !penAnimEnabled;
+      togglePenBtn.classList.toggle("active-sound", penAnimEnabled);
+      handPen.classList.toggle("pen-hidden", !penAnimEnabled);
+      penToggleLabel.textContent = penAnimEnabled ? "কলম ও হাত: চালু" : "কলম ও হাত: বন্ধ";
+    });
+
+    function parkPenAtRest() {
+      handPen.classList.remove("actively-writing");
+      handPen.classList.add("resting-on-desk");
+    }
+
+    function updateHandPosition(isTyping = false) {
+      if (!penAnimEnabled) return;
+      syncDeskWidthVar();
+
+      const pos = textarea.selectionStart || textarea.value.length;
+      const textBefore = textarea.value.slice(0, pos);
+      mirror.textContent = textBefore;
+
+      const marker = document.createElement("span");
+      marker.textContent = "|";
+      mirror.appendChild(marker);
+
+      const x = Math.min(marker.offsetLeft, wrapper.clientWidth - 34);
+      const y = Math.min(marker.offsetTop - textarea.scrollTop + 26, wrapper.clientHeight - 8);
+
+      const dx = x - prevX;
+      prevX = x;
+      strokePhase += 1;
+
+      const velocityTilt = Math.max(-8, Math.min(8, dx * 0.25));
+      const microOscillation = isTyping ? Math.sin(strokePhase * 2.0) * 3.0 : 0;
+      const verticalBob = isTyping ? Math.cos(strokePhase * 2.2) * 2.0 : 0;
+
+      // Exact gold nib tip in SVG is at (14, 220)
+      const penX = x - 14;
+      const penY = y - 218 + verticalBob;
+
+      handPen.classList.remove("resting-on-desk");
+      handPen.classList.add("actively-writing");
+      handPen.style.transform = `translate(${penX}px, ${penY}px) rotate(${(velocityTilt + microOscillation).toFixed(2)}deg)`;
+
+      clearTimeout(idleTimeout);
+      idleTimeout = setTimeout(() => {
+        parkPenAtRest();
+      }, 1350);
+
+      if (isTyping) {
+        const spark = document.createElement("div");
+        spark.className = "ink-sparkle";
+        spark.style.left = `${x}px`;
+        spark.style.top = `${y}px`;
+        wrapper.appendChild(spark);
+        setTimeout(() => spark.remove(), 650);
+      }
+    }
+
+    textarea.addEventListener("input", () => {
+      const now = Date.now();
+      const dt = Math.min(now - lastKeyTime, 1100);
+      lastKeyTime = now;
+      keystrokes.push({
+        text: textarea.value,
+        dt
+      });
+      pages[currentPageIdx] = textarea.value;
+      soundEngine.playPenScratch(penModeSel.value);
+      saveDraftNow();
+      updateHandPosition(true);
+    });
+
+    textarea.addEventListener("focus", () => {
+      if (textarea.value.length > 0) updateHandPosition(false);
+    });
+    textarea.addEventListener("click", () => updateHandPosition(false));
+    textarea.addEventListener("keyup", () => updateHandPosition(false));
+
+        // ======================================================================
+    // V11: LIVE FONT SWITCHER, PER-PAGE THEMES, CANDLE LIGHT, VOICE & DRAFT
+    // ======================================================================
+    const DRAFT_KEY = "chitthi_v11_draft";
+    const deskStage = document.getElementById("desk-scene-stage");
+    const deskThemeSel = document.getElementById("desk-theme-select");
+    const quickFontSel = document.getElementById("quick-font-select");
+    const applyAllCheck = document.getElementById("apply-all-pages-check");
+    const penModeSel = document.getElementById("pen-mode-select");
+    const stampSel = document.getElementById("stamp-select");
+    const aromaSel = document.getElementById("aroma-select");
+    const coffeeCheck = document.getElementById("coffee-stain-toggle");
+    const writeRainLayer = document.getElementById("write-rain-layer");
+    const writePageBgSel = document.getElementById("write-page-bg-select");
+
+    // Apply ?theme= from index gallery click if provided
+    const urlTheme = params.get("theme");
+    if (urlTheme) {
+      deskThemeSel.value = urlTheme;
+    }
+
+    // Whole Page Background Theme
+    const savedPageBg = localStorage.getItem("chitthi_bg_theme") || "default";
+    if (savedPageBg !== "default") {
+      document.body.classList.add(savedPageBg);
+      writePageBgSel.value = savedPageBg;
+    }
+    writePageBgSel.addEventListener("change", () => {
+      document.body.classList.remove("bg-art-chitthi-box", "bg-art-sunlit-window", "bg-art-calcutta-postbox", "bg-art-kundakali", "bg-art-vintage-tv");
+      if (writePageBgSel.value !== "default") document.body.classList.add(writePageBgSel.value);
+      localStorage.setItem("chitthi_bg_theme", writePageBgSel.value);
+    });
+
+    // Candlelight On/Off Mode
+    let roomDimmed = false;
+    const roomLightBtn = document.getElementById("room-light-btn");
+    const candleWidget = document.getElementById("desk-candle-widget");
+    const candleLabel = document.getElementById("candle-label");
+    function toggleCandleLightMode() {
+      roomDimmed = !roomDimmed;
+      document.body.classList.toggle("candle-dim-mode", roomDimmed);
+      roomLightBtn.textContent = roomDimmed ? "🕯️ আলো: মোমবাতি" : "🕯️ আলো: উজ্জ্বল";
+      candleLabel.textContent = roomDimmed ? "আলো জ্বালান" : "আলো নিভান";
+    }
+    roomLightBtn.addEventListener("click", toggleCandleLightMode);
+    candleWidget.addEventListener("click", toggleCandleLightMode);
+
+    // Multi-Page Array with Individual Page Styles!
+    let pages = [""];
+    let pageStyles = [{
+      paperTheme: selectedPaper,
+      deskTheme: deskThemeSel.value,
+      fontClass: quickFontSel.value,
+      penMode: penModeSel.value
+    }];
+    let currentPageIdx = 0;
+
+    function syncVisualsToCurrentPage(triggerTurnAnim = false) {
+      const st = pageStyles[currentPageIdx] || {
+        paperTheme: selectedPaper,
+        deskTheme: deskThemeSel.value,
+        fontClass: quickFontSel.value,
+        penMode: penModeSel.value
+      };
+
+      selectedPaper = st.paperTheme || "cream";
+      deskThemeSel.value = st.deskTheme || "walnut";
+      quickFontSel.value = st.fontClass || "font-noto-serif";
+      penModeSel.value = st.penMode || "fountain";
+
+      // Update paper swatch UI
+      document.querySelectorAll("[data-paper]").forEach((b) => {
+        b.classList.toggle("selected", b.dataset.paper === selectedPaper);
+      });
+
+      // Apply Desk Backdrop Theme
+      deskStage.className = "desk-scene-stage" + (st.deskTheme !== "walnut" ? ` desk-theme-${st.deskTheme}` : "");
+
+      // Apply Parchment Theme + Coffee Stains + Page Flip animation
+      sheet.className = "parchment-sheet"
+        + (selectedPaper !== "cream" ? ` theme-${selectedPaper}` : "")
+        + (coffeeCheck.checked ? " has-coffee-stains" : "")
+        + (triggerTurnAnim ? " page-turning" : "");
+      if (triggerTurnAnim) {
+        setTimeout(() => sheet.classList.remove("page-turning"), 450);
+      }
+
+      // Apply Font & Pen Ink Class directly to textarea AND caret mirror (guaranteed immediate change!)
+      textarea.className = `letter-textarea ${st.fontClass} pen-${st.penMode}`;
+      mirror.className = `caret-mirror ${st.fontClass}`;
+
+      // Stamp image preview
+      const stampImgMap = {
+        dhaka_curzon: "assets/stamp-dhaka-curzon.jpg",
+        bangladesh_85: "assets/stamp-bangladesh-85.jpg"
+      };
+      document.getElementById("preview-real-stamp-img").src = stampImgMap[stampSel.value] || stampImgMap.dhaka_curzon;
+
+      // Live Rain Weather Overlay
+      const isRainy = weatherSelect.value.includes("বৃষ্টি");
+      if (isRainy) {
+        if (!writeRainLayer.childElementCount) {
+          for (let i = 0; i < 42; i++) {
+            const d = document.createElement("div");
+            d.className = "rain-drop";
+            d.style.left = Math.random() * 100 + "%";
+            d.style.animationDuration = (0.65 + Math.random() * 0.6) + "s";
+            writeRainLayer.appendChild(d);
+          }
+        }
+        writeRainLayer.classList.add("active");
+        soundEngine.startRainLoop();
+      } else {
+        writeRainLayer.classList.remove("active");
+        soundEngine.stopRainLoop();
+      }
+
+      document.getElementById("active-page-badge").textContent = `পাতা ${currentPageIdx + 1} এর সাজ:`;
+      document.getElementById("delete-page-btn").style.display = pages.length > 1 ? "inline-flex" : "none";
+    }
+
+    function updateStyleProp(prop, val) {
+      if (applyAllCheck.checked) {
+        pageStyles.forEach((s) => (s[prop] = val));
+      } else {
+        pageStyles[currentPageIdx][prop] = val;
+      }
+      syncVisualsToCurrentPage(false);
+      saveDraftNow();
+    }
+
+    // Hook Paper Swatches to per-page / all-pages updater
+    document.querySelectorAll("[data-paper]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        updateStyleProp("paperTheme", btn.dataset.paper);
+      });
+    });
+
+    deskThemeSel.addEventListener("change", () => updateStyleProp("deskTheme", deskThemeSel.value));
+    quickFontSel.addEventListener("change", () => {
+      updateStyleProp("fontClass", quickFontSel.value);
+      soundEngine.playMailboxClick();
+    });
+    penModeSel.addEventListener("change", () => updateStyleProp("penMode", penModeSel.value));
+    [stampSel, aromaSel, coffeeCheck, weatherSelect].forEach((el) => {
+      el.addEventListener("change", () => {
+        syncVisualsToCurrentPage(false);
+        saveDraftNow();
+      });
+    });
+
+    // Multi-Page Navigation & Management
+    const pageTabsBar = document.getElementById("page-tabs-bar");
+    const nextEditBtn = document.getElementById("next-edit-page-btn");
+    const prevEditBtn = document.getElementById("prev-edit-page-btn");
+    const addPageBtn = document.getElementById("add-page-btn");
+    const deletePageBtn = document.getElementById("delete-page-btn");
+
+    function switchToEditPage(targetIdx) {
+      if (targetIdx < 0 || targetIdx >= pages.length) return;
+      pages[currentPageIdx] = textarea.value;
+      currentPageIdx = targetIdx;
+      textarea.value = pages[currentPageIdx] || "";
+      renderPageTabs();
+      syncVisualsToCurrentPage(true);
+      soundEngine.playPaperRustle();
+    }
+
+    function renderPageTabs() {
+      pageTabsBar.querySelectorAll(".page-tab-btn").forEach((b) => b.remove());
+      pages.forEach((_, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "pill-btn page-tab-btn" + (idx === currentPageIdx ? " active-sound" : "");
+        btn.textContent = `পাতা ${idx + 1}`;
+        btn.addEventListener("click", () => switchToEditPage(idx));
+        pageTabsBar.insertBefore(btn, nextEditBtn);
+      });
+    }
+
+    prevEditBtn.addEventListener("click", () => switchToEditPage(currentPageIdx - 1));
+    nextEditBtn.addEventListener("click", () => switchToEditPage(currentPageIdx + 1));
+
+    addPageBtn.addEventListener("click", () => {
+      if (pages.length >= 6) {
+        showToast("সর্বোচ্চ ৬টি পাতা যোগ করা যাবে");
+        return;
+      }
+      pages[currentPageIdx] = textarea.value;
+      const currentStyle = { ...pageStyles[currentPageIdx] };
+      pages.push("");
+      pageStyles.push(currentStyle);
+      switchToEditPage(pages.length - 1);
+      saveDraftNow();
+      showToast(`নতুন পাতা ${pages.length} যোগ করা হয়েছে!`);
+    });
+
+    deletePageBtn.addEventListener("click", () => {
+      if (pages.length <= 1) return;
+      pages.splice(currentPageIdx, 1);
+      pageStyles.splice(currentPageIdx, 1);
+      currentPageIdx = Math.max(0, currentPageIdx - 1);
+      textarea.value = pages[currentPageIdx] || "";
+      renderPageTabs();
+      syncVisualsToCurrentPage(true);
+      saveDraftNow();
+      showToast("পাতাটি বাদ দেওয়া হয়েছে");
+    });
+
+    // Draft Auto-Save & Recovery
+    const draftBadge = document.getElementById("draft-status-badge");
+    function saveDraftNow() {
+      pages[currentPageIdx] = textarea.value;
+      try {
+        localStorage.setItem(DRAFT_KEY, JSON.stringify({
+          toName: document.getElementById("to-name").value,
+          fromName: document.getElementById("from-name").value,
+          envelopeAddress: document.getElementById("envelope-address").value,
+          pages,
+          pageStyles,
+          currentPageIdx,
+          stampId: stampSel.value,
+          aroma: aromaSel.value
+        }));
+        const tm = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        draftBadge.textContent = `💾 ড্রাফট সেভড (${tm})`;
+      } catch (_) {}
+    }
+
+    try {
+      const savedDraft = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
+      if (savedDraft) {
+        if (savedDraft.toName && !document.getElementById("to-name").value) document.getElementById("to-name").value = savedDraft.toName;
+        if (savedDraft.fromName) document.getElementById("from-name").value = savedDraft.fromName;
+        if (savedDraft.envelopeAddress) document.getElementById("envelope-address").value = savedDraft.envelopeAddress;
+        if (Array.isArray(savedDraft.pages) && savedDraft.pages.length) {
+          pages = savedDraft.pages;
+          pageStyles = Array.isArray(savedDraft.pageStyles) && savedDraft.pageStyles.length === pages.length
+            ? savedDraft.pageStyles
+            : pages.map(() => ({ paperTheme: "cream", deskTheme: urlTheme || "walnut", fontClass: "font-noto-serif", penMode: "fountain" }));
+          currentPageIdx = Math.min(savedDraft.currentPageIdx || 0, pages.length - 1);
+          textarea.value = pages[currentPageIdx] || "";
+          renderPageTabs();
+        }
+        if (savedDraft.stampId) stampSel.value = savedDraft.stampId;
+        if (savedDraft.aroma) aromaSel.value = savedDraft.aroma;
+      }
+    } catch (_) {}
+
+    syncVisualsToCurrentPage(false);
+
+    document.getElementById("manual-save-draft-btn").addEventListener("click", () => {
+      saveDraftNow();
+      showToast("আপনার চিঠির ড্রাফট সংরক্ষিত হয়েছে!");
+    });
+
+    document.getElementById("clear-draft-btn").addEventListener("click", () => {
+      localStorage.removeItem(DRAFT_KEY);
+      pages = [""];
+      pageStyles = [{ paperTheme: "cream", deskTheme: "walnut", fontClass: "font-noto-serif", penMode: "fountain" }];
+      currentPageIdx = 0;
+      textarea.value = "";
+      document.getElementById("to-name").value = "";
+      document.getElementById("from-name").value = "";
+      document.getElementById("envelope-address").value = "";
+      renderPageTabs();
+      syncVisualsToCurrentPage(false);
+      draftBadge.textContent = "💾 ড্রাফট মুছে ফেলা হয়েছে";
+      showToast("ড্রাফট পরিষ্কার করা হয়েছে");
+    });
+
+    // Voice Note Recorder
+    let mediaRec = null;
+    let voiceChunks = [];
+    let voiceNoteBase64 = "";
+    const recBtn = document.getElementById("record-voice-btn");
+    const clrVoiceBtn = document.getElementById("clear-voice-btn");
+    const voiceAudio = document.getElementById("voice-preview-audio");
+
+    recBtn.addEventListener("click", async () => {
+      if (mediaRec && mediaRec.state === "recording") {
+        mediaRec.stop();
+        recBtn.textContent = "● পুনরায় রেকর্ড";
+        return;
+      }
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        voiceChunks = [];
+        mediaRec = new MediaRecorder(stream);
+        mediaRec.ondataavailable = (e) => { if (e.data.size > 0) voiceChunks.push(e.data); };
+        mediaRec.onstop = () => {
+          stream.getTracks().forEach((t) => t.stop());
+          const blob = new Blob(voiceChunks, { type: "audio/webm" });
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            voiceNoteBase64 = reader.result || "";
+            voiceAudio.src = voiceNoteBase64;
+            voiceAudio.style.display = "block";
+            clrVoiceBtn.style.display = "inline-flex";
+            showToast("ভয়েস নোট খামের সাথে যুক্ত হয়েছে!");
+          };
+          reader.readAsDataURL(blob);
+        };
+        mediaRec.start();
+        recBtn.textContent = "⏹ থামান (রেকর্ডিং...)";
+        setTimeout(() => { if (mediaRec && mediaRec.state === "recording") mediaRec.stop(); }, 15000);
+      } catch (_) {
+        showToast("মাইক্রোফোন পারমিশন পাওয়া যায়নি");
+      }
+    });
+
+    clrVoiceBtn.addEventListener("click", () => {
+      voiceNoteBase64 = "";
+      voiceAudio.style.display = "none";
+      clrVoiceBtn.style.display = "none";
+      recBtn.textContent = "● রেকর্ড শুরু";
+    });
+
+    // Language Control (Music toggle & navbar dropdown handled globally)
+    document.getElementById("lang-toggle-btn").addEventListener("click", () => {
+      toggleLang();
+      refreshMusicUI();
+    });
+
+    // Seal & Dispatch Letter
+    document.getElementById("seal-send-btn").addEventListener("click", async () => {
+      const body = textarea.value.trim();
+      if (!body) {
+        showToast("অনুগ্রহ করে চিঠিতে কিছু লিখুন! / Please write something first.");
+        textarea.focus();
+        return;
+      }
+
+      const unlockInput = document.getElementById("unlock-time").value;
+      const unlockAt = unlockInput ? new Date(unlockInput).getTime() : boxUnlockAt;
+
+      const selectedTrack = soundEngine.getCurrentTrack();
+      const customUrl = document.getElementById("custom-song-url").value.trim();
+      const finalSongUrl = customUrl || (selectedTrack && !selectedTrack.isBlob && selectedTrack.src ? selectedTrack.src : "");
+      const finalSongTitle = selectedTrack ? selectedTrack.titleBn : "বৃষ্টি ও পিয়ানো";
+
+      pages[currentPageIdx] = textarea.value;
+      const validIndices = pages.map((p, idx) => (p.trim() ? idx : -1)).filter((i) => i >= 0);
+      const nonEmptyPages = validIndices.length ? validIndices.map((i) => pages[i].trim()) : [body];
+      const finalPageStyles = validIndices.length ? validIndices.map((i) => pageStyles[i]) : [pageStyles[0]];
+      const finalBody = nonEmptyPages.join("\n\n");
+      const wMode = weatherSelect.value.includes("বৃষ্টি") ? "rainy" : weatherSelect.value.includes("কুয়াশা") ? "misty" : "golden";
+
+      soundEngine.playWaxCrack();
+      soundEngine.playTelegraphSend();
+
+      const { record, shareUrl } = await saveLetter({
+        toName: document.getElementById("to-name").value.trim(),
+        fromName: document.getElementById("from-name").value.trim(),
+        envelopeAddress: document.getElementById("envelope-address").value.trim(),
+        targetBox,
+        occasion: boxOccasion,
+        body: finalBody,
+        pages: nonEmptyPages,
+        pageStyles: finalPageStyles,
+        paperTheme: finalPageStyles[0].paperTheme || selectedPaper,
+        deskTheme: finalPageStyles[0].deskTheme || deskThemeSel.value,
+        pageBgTheme: writePageBgSel.value,
+        coffeeStains: coffeeCheck.checked,
+        waxColor: selectedWax,
+        stampId: stampSel.value,
+        penMode: finalPageStyles[0].penMode || penModeSel.value,
+        fontClass: finalPageStyles[0].fontClass || quickFontSel.value,
+        aroma: aromaSel.value,
+        weatherMode: wMode,
+        voiceNoteData: voiceNoteBase64,
+        postmark: `${citySelect.value} • ${document.getElementById("postmark-date-display").textContent} • ${document.getElementById("postmark-mood-display").textContent}`,
+        songId: selectedTrack ? selectedTrack.id : "piano",
+        songTitle: finalSongTitle,
+        songUrl: finalSongUrl,
+        unlockAt,
+        burnAfterReading: document.getElementById("burn-toggle").checked,
+        keystrokes
+      });
+      localStorage.removeItem(DRAFT_KEY);
+
+      document.getElementById("generated-stamp-code").textContent = `#${record.stampCode}`;
+      document.getElementById("generated-share-link").value = shareUrl;
+      document.getElementById("sent-modal").classList.add("show");
+    });
+
+    document.getElementById("copy-link-btn").addEventListener("click", () => {
+      navigator.clipboard.writeText(document.getElementById("generated-share-link").value);
+      showToast("চিঠির লিংক কপি হয়েছে! / Letter link copied!");
+    });
+
+    document.getElementById("copy-code-btn").addEventListener("click", () => {
+      const code = document.getElementById("generated-stamp-code").textContent;
+      navigator.clipboard.writeText(code);
+      showToast(`গোপন কোড ${code} কপি হয়েছে!`);
+    });
+
+    document.getElementById("close-modal-btn").addEventListener("click", () => {
+      document.getElementById("sent-modal").classList.remove("show");
+    });
+  </script>
+</body>
+</html>

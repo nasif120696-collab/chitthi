@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>পোস্টবক্স ও উৎসব ওয়াল — চিঠি (CHITTHI)</title>
+  <link rel="icon" type="image/png" href="assets/chitthi-favicon.png" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <header class="postal-nav">
+    <a href="index.html" class="brand-logo">
+      <img src="assets/chitthi-logo.png" alt="Chitthi Emblem" class="brand-logo-img" />
+      <div class="brand-text-wrap">
+        <span class="brand-name" data-i18n="brand_name">চিঠি</span>
+        <span class="brand-sub" data-i18n="brand_sub">অনুভূতির ডাকঘর</span>
+      </div>
+    </a>
+
+    <nav class="nav-links">
+      <a href="index.html" class="nav-link" data-i18n="nav_home">ডাকঘর</a>
+      <a href="write.html" class="nav-link" data-i18n="nav_write">চিঠি লিখুন</a>
+      <a href="postbox.html" class="nav-link active" data-i18n="nav_postbox">পোস্টবক্স ও উৎসব</a>
+      <a href="#track" class="nav-link" data-i18n="nav_track">গোপন কোড</a>
+      <a href="#how-to-send" class="nav-link" data-open-guide="direct" data-i18n="nav_guide">নির্দেশিকা</a>
+    </nav>
+
+    <div class="nav-controls">
+      <button id="sound-toggle-btn" class="pill-btn" type="button">🎵 <span data-i18n="sound_off">আবহ সঙ্গীত</span></button>
+      <button id="lang-toggle-btn" class="pill-btn" type="button">বাংলা | EN</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:1.75rem;">
+      <!-- Left Card: Create Personal OR Campus/Occasion Postbox -->
+      <section class="vintage-card">
+        <div class="card-icon-circle">📬</div>
+        <h2 class="serif-title" style="font-size:1.55rem; color:var(--gold-bright);" data-i18n="postbox_title">
+          ব্যক্তিগত ও উৎসব পোস্টবক্স
+        </h2>
+        <p style="color:var(--cream-aged); font-size:0.95rem;" data-i18n="postbox_desc">
+          নিজের নামে অথবা ক্যাম্পাস/উৎসবের নামে পোস্টবক্স তৈরি করে লিংকটি স্টোরিতে শেয়ার করুন।
+        </p>
+
+        <div style="display:flex; flex-direction:column; gap:0.75rem; margin-top:1rem;">
+          <select id="box-occasion-select" class="vintage-select">
+            <option value="personal">✉️ ব্যক্তিগত পোস্টবক্স (Personal Postbox)</option>
+            <option value="campus">🎓 ক্যাম্পাস ফেয়ারওয়েল / র‍্যাগ ডে (Campus Wall)</option>
+            <option value="boishakh">🌸 পহেলা বৈশাখ পোস্টবক্স (Pohela Boishakh)</option>
+            <option value="eid">🌙 ঈদ মোবারক পোস্টবক্স (Eid Mubarak)</option>
+            <option value="valentine">🌹 ভালোবাসা দিবস / বিশেষ দিন (Special Day)</option>
+          </select>
+
+          <input type="text" id="box-handle-input" class="vintage-input" placeholder="ইউজারনেম দিন (যেমন: nasif অথবা baust-cse)" />
+          <input type="text" id="box-name-input" class="vintage-input" placeholder="পোস্টবক্সের শিরোনাম / আপনার নাম" />
+
+          <div>
+            <label style="font-size:0.8rem; color:var(--cream-dark); display:block; margin-bottom:0.3rem;">
+              ⏳ ঐচ্ছিক: উৎসব/ব্যাচ আনলক সময় (সব চিঠি একসাথে খুলবে)
+            </label>
+            <input type="datetime-local" id="box-batch-unlock" class="vintage-input" />
+          </div>
+
+          <button type="button" id="claim-box-btn" class="btn-gold" data-i18n="claim_box_btn">
+            পোস্টবক্স তৈরি করুন
+          </button>
+        </div>
+
+        <div id="active-box-panel" style="display:none; margin-top:1.35rem; padding-top:1.15rem; border-top:1px dashed var(--gold-dim);">
+          <div style="font-size:0.84rem; color:var(--gold-bright); margin-bottom:0.4rem;">
+            আপনার শেয়ারযোগ্য পোস্টবক্স লিংক:
+          </div>
+          <input type="text" id="my-box-share-url" class="vintage-input" readonly style="font-size:0.82rem; margin-bottom:0.65rem;" />
+          <div style="display:flex; gap:0.5rem;">
+            <button type="button" id="copy-box-url-btn" class="btn-outline" style="flex:1; padding:0.55rem; font-size:0.86rem;">
+              লিংক কপি করুন 📋
+            </button>
+            <button type="button" id="refresh-inbox-btn" class="btn-outline" style="padding:0.55rem 0.9rem; font-size:0.86rem;">
+              🔄
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Card: Secret Stamp Code Reply Tracker -->
+      <section class="vintage-card" id="track">
+        <div class="card-icon-circle">🔖</div>
+        <h2 class="serif-title" style="font-size:1.55rem; color:var(--gold-bright);" data-i18n="track_title">
+          গোপন ডাকটিকিট কোড ট্র্যাক করুন
+        </h2>
+        <p style="color:var(--cream-aged); font-size:0.95rem;" data-i18n="track_desc">
+          আপনার পাঠানো চিঠির #BD-XXXX কোডটি দিয়ে প্রাপকের উত্তর দেখুন।
+        </p>
+
+        <div style="display:flex; gap:0.6rem; margin-top:1rem;">
+          <input type="text" id="stamp-code-input" class="vintage-input" placeholder="#BD-4829" style="text-transform:uppercase;" />
+          <button type="button" id="check-code-btn" class="btn-crimson" style="white-space:nowrap;">
+            খুঁজুন
+          </button>
+        </div>
+
+        <div id="code-result-box" style="margin-top:1.25rem; display:none; background:rgba(0,0,0,0.42); border:1px solid var(--gold-dim); border-radius:12px; padding:1rem;"></div>
+        <div id="sent-history-container" style="margin-top:1.15rem;"></div>
+      </section>
+    </div>
+
+    <!-- Incoming Postbox Letters List -->
+    <section style="margin-top:2.5rem;">
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.6rem; margin-bottom:1rem;">
+        <h3 class="serif-title" style="font-size:1.55rem; color:var(--gold-bright);">
+          📥 পোস্টবক্সে আসা চিঠিসমূহ (<span id="inbox-count">0</span>)
+        </h3>
+        <span id="active-occasion-badge" class="occasion-tag" style="display:none;"></span>
+      </div>
+      <div id="inbox-grid" class="hub-grid" style="margin-top:0.5rem;">
+        <p style="color:var(--cream-dark);">পোস্টবক্স তৈরি করলে এখানে আপনার আসা সব চিঠি দেখা যাবে।</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="postal-footer">
+    <div class="footer-dev-mini">
+      <img src="assets/nasif-portrait.jpg" alt="Mushfiqul Alam Nasif" />
+      <div>
+        <div style="font-weight:700; color:var(--gold-bright);" data-i18n="footer_crafted">
+          ভালোবাসা ও যত্নে নির্মিত — মুশফিকুল আলম নাসিফ
+        </div>
+        <div style="font-size:0.78rem; color:var(--cream-dark);">
+          CSE, BAUST Khulna • Some feelings deserve a letter.
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-links">
+      <a href="https://github.com/nasif120696-collab" target="_blank" rel="noopener noreferrer" class="social-pill" style="padding:0.38rem 0.85rem; font-size:0.8rem;">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.69-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 2.9-.39c.98 0 1.97.13 2.9.39 2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14 0 1.55-.01 2.8-.01 3.18 0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
+        <span>GitHub</span>
+      </a>
+      <a href="https://www.linkedin.com/in/mushfiqulalamnasif" target="_blank" rel="noopener noreferrer" class="social-pill" style="padding:0.38rem 0.85rem; font-size:0.8rem;">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 3A2 2 0 0 1 21 5v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77Z"/></svg>
+        <span>LinkedIn</span>
+      </a>
+      <a href="mailto:mushfiqulalam14@gmail.com" class="social-pill" style="padding:0.38rem 0.85rem; font-size:0.8rem;">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg>
+        <span>Gmail</span>
+      </a>
+    </div>
+  </footer>
+
+
+  <div id="toast" class="toast-banner"></div>
+
+  <script type="module">
+    import { applyTranslations, toggleLang, getLang, t } from "./js/i18n.js";
+    import { soundEngine, setupGlobalMusicControls } from "./js/audio.js";
+    import { initTutorialGuide } from "./js/guide-modal.js";
+    import { createOrGetPostbox, getLettersForPostbox, getLetterByStampCode, getSentHistory } from "./js/storage.js";
+
+    applyTranslations();
+    const { refreshUI: refreshMusicUI } = setupGlobalMusicControls(getLang, t);
+    initTutorialGuide();
+
+    document.getElementById("lang-toggle-btn").addEventListener("click", () => {
+      toggleLang();
+      refreshMusicUI();
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 2800);
+    }
+
+    const OCCASION_LABELS = {
+      personal: "✉️ ব্যক্তিগত পোস্টবক্স",
+      campus: "🎓 ক্যাম্পাস ফেয়ারওয়েল ওয়াল",
+      boishakh: "🌸 পহেলা বৈশাখ পোস্টবক্স",
+      eid: "🌙 ঈদ মোবারক পোস্টবক্স",
+      valentine: "🌹 বিশেষ দিনের পোস্টবক্স"
+    };
+
+    async function loadPostboxUI(boxData) {
+      if (!boxData) return;
+      document.getElementById("box-handle-input").value = boxData.handle;
+      document.getElementById("box-name-input").value = boxData.displayName;
+      if (boxData.occasion) {
+        document.getElementById("box-occasion-select").value = boxData.occasion;
+        const badge = document.getElementById("active-occasion-badge");
+        badge.style.display = "inline-flex";
+        badge.textContent = OCCASION_LABELS[boxData.occasion] || OCCASION_LABELS.personal;
+      }
+      document.getElementById("active-box-panel").style.display = "block";
+
+      const baseUrl = window.location.origin + window.location.pathname.replace(/[^/]*$/, "");
+      const shareUrl = `${baseUrl}write.html?to=${boxData.handle}`;
+      document.getElementById("my-box-share-url").value = shareUrl;
+
+      const letters = await getLettersForPostbox(boxData.handle);
+      document.getElementById("inbox-count").textContent = letters.length;
+
+      const grid = document.getElementById("inbox-grid");
+      if (!letters.length) {
+        grid.innerHTML = `<p style="color:var(--cream-dark);">এখনো কোনো চিঠি আসেনি। আপনার পোস্টবক্স লিংকটি বন্ধুদের সাথে শেয়ার করুন!</p>`;
+        return;
+      }
+
+      grid.innerHTML = letters.map((ltr) => `
+        <article class="vintage-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+            <span style="color:var(--gold-bright); font-weight:700;">#${ltr.stampCode}</span>
+            <span style="font-size:0.78rem; color:var(--cream-dark);">${ltr.postmark}</span>
+          </div>
+          <p style="font-size:0.94rem; color:var(--cream-paper); margin-bottom:1rem;">
+            “${ltr.body.slice(0, 95)}${ltr.body.length > 95 ? "..." : ""}”
+          </p>
+          <a href="open.html?id=${ltr.id}" class="btn-crimson" style="padding:0.5rem 1.1rem; font-size:0.86rem;">
+            খাম খুলুন 🕯️
+          </a>
+        </article>
+      `).join("");
+    }
+
+    const savedBox = JSON.parse(localStorage.getItem("chitthi_my_postbox") || "null");
+    if (savedBox) loadPostboxUI(savedBox);
+
+    document.getElementById("claim-box-btn").addEventListener("click", async () => {
+      const handle = document.getElementById("box-handle-input").value.trim();
+      const name = document.getElementById("box-name-input").value.trim();
+      const occasion = document.getElementById("box-occasion-select").value;
+      const batchInput = document.getElementById("box-batch-unlock").value;
+      const batchUnlockAt = batchInput ? new Date(batchInput).getTime() : null;
+
+      if (!handle) {
+        showToast("একটি ইউজারনেম লিখুন! / Please enter a handle.");
+        return;
+      }
+      const box = await createOrGetPostbox(handle, name, occasion, batchUnlockAt);
+      soundEngine.playMailboxClick();
+      showToast(`পোস্টবক্স @${box.handle} তৈরি হয়েছে!`);
+      loadPostboxUI(box);
+    });
+
+    document.getElementById("copy-box-url-btn").addEventListener("click", () => {
+      navigator.clipboard.writeText(document.getElementById("my-box-share-url").value);
+      showToast("পোস্টবক্স লিংক কপি হয়েছে! স্টোরিতে শেয়ার করুন।");
+    });
+
+    document.getElementById("refresh-inbox-btn").addEventListener("click", () => {
+      const box = JSON.parse(localStorage.getItem("chitthi_my_postbox") || "null");
+      if (box) loadPostboxUI(box);
+    });
+
+    document.getElementById("check-code-btn").addEventListener("click", async () => {
+      const raw = document.getElementById("stamp-code-input").value;
+      const resultBox = document.getElementById("code-result-box");
+      if (!raw.trim()) return;
+
+      const ltr = await getLetterByStampCode(raw);
+      resultBox.style.display = "block";
+
+      if (!ltr) {
+        resultBox.innerHTML = `<p style="color:#f28b82;">এই কোডের কোনো চিঠি পাওয়া যায়নি। কোডটি আবার যাচাই করুন।</p>`;
+        return;
+      }
+
+      if (ltr.reply && ltr.reply.text) {
+        resultBox.innerHTML = `
+          <div style="color:var(--gold-bright); font-weight:700; margin-bottom:0.35rem;">💌 প্রাপকের গোপন উত্তর পাওয়া গেছে!</div>
+          <p style="background:var(--cream-paper); color:var(--ink-sepia); padding:0.85rem; border-radius:8px; font-family:var(--font-bn-serif);">
+            “${ltr.reply.text}”
+          </p>
+        `;
+      } else {
+        resultBox.innerHTML = `
+          <div style="color:var(--gold-bright); font-weight:600;">চিঠিটি ডেলিভারি হয়েছে (#${ltr.stampCode})</div>
+          <p style="font-size:0.88rem; color:var(--cream-aged); margin-top:0.3rem;">প্রাপক এখনো কোনো গোপন উত্তর পাঠাননি। পরে আবার চেক করুন!</p>
+        `;
+      }
+    });
+    const savedPbBg = localStorage.getItem("chitthi_bg_theme") || "default";
+    if (savedPbBg !== "default") document.body.classList.add(savedPbBg);
+
+    (async function renderSentReplyGlowList() {
+      const box = document.getElementById("sent-history-container");
+      const sent = getSentHistory();
+      if (!sent.length) return;
+      box.innerHTML = `<div style="font-size:0.84rem; color:var(--cream-dark); margin-bottom:0.5rem;">আপনার পাঠানো সাম্প্রতিক খামসমূহ (উত্তর এলে সোনালি আলোয় জ্বলবে):</div>`;
+      for (const item of sent.slice(0, 6)) {
+        const live = await getLetterByStampCode(item.stampCode);
+        const hasReply = Boolean(live && live.reply && live.reply.text);
+        const pill = document.createElement("div");
+        pill.className = "vintage-card" + (hasReply ? " envelope-reply-glow" : "");
+        pill.style.cssText = "padding:0.65rem 0.9rem; margin-bottom:0.5rem; cursor:pointer; display:flex; justify-content:space-between; align-items:center;";
+        pill.innerHTML = `<span style="color:var(--gold-bright); font-weight:700;">#${item.stampCode} • ${item.toName}</span>
+          <span style="font-size:0.78rem; color:${hasReply ? "var(--gold-bright)" : "var(--cream-aged)"};">${hasReply ? "✨ উত্তর এসেছে!" : "অপেক্ষমান"}</span>`;
+        pill.addEventListener("click", () => {
+          document.getElementById("stamp-code-input").value = item.stampCode;
+          document.getElementById("check-code-btn").click();
+        });
+        box.appendChild(pill);
+      }
+    })();
+  </script>
+</body>
+</html>

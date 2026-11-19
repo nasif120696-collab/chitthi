@@ -1,0 +1,2642 @@
+/* ==========================================================================
+   CHITTHI (চিঠি) — Vintage Postal & Emotional Keepsake Stylesheet
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;600&family=Atma:wght@400;600;700&family=Baloo+Da+2:wght@400;600&family=Caveat:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Dancing+Script:wght@600;700&family=Galada&family=Great+Vibes&family=Hind+Siliguri:wght@400;500;600;700&family=Mina:wght@400;700&family=Noto+Sans+Bengali:wght@400;600&family=Noto+Serif+Bengali:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Tiro+Bangla:ital@0;1&display=swap');
+
+:root {
+  --walnut-deep: #1a110b;
+  --walnut-dark: #281910;
+  --walnut-mid: #3d2618;
+  --walnut-light: #5c3a24;
+  --cream-paper: #f6eedc;
+  --cream-aged: #ebd9b8;
+  --cream-dark: #d9c298;
+  --parchment-rose: #f5e2dc;
+  --parchment-mint: #e3ece2;
+  --parchment-night: #1f2430;
+  --gold-muted: #c8a254;
+  --gold-bright: #e5c171;
+  --gold-dim: rgba(200, 162, 84, 0.28);
+  --wax-crimson: #8f1d24;
+  --wax-crimson-light: #b82932;
+  --wax-emerald: #1e563f;
+  --wax-royal: #233b6e;
+  --wax-gold: #a67c2e;
+  --ink-sepia: #2c1e16;
+  --ink-faded: #5e493a;
+  --shadow-ambient: 0 24px 60px rgba(10, 5, 2, 0.65);
+  --shadow-card: 0 14px 36px rgba(16, 9, 4, 0.45);
+  --font-bn-serif: 'Noto Serif Bengali', 'Cormorant Garamond', Georgia, serif;
+  --font-bn-sans: 'Hind Siliguri', system-ui, -apple-system, sans-serif;
+  --font-bn-script: 'Galada', 'Caveat', cursive;
+  --font-en-serif: 'Playfair Display', 'Noto Serif Bengali', Georgia, serif;
+  --font-en-script: 'Caveat', 'Galada', cursive;
+  --transition-smooth: all 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background-color: var(--walnut-deep);
+  background-image:
+    radial-gradient(circle at 20% 15%, rgba(200, 162, 84, 0.11) 0%, transparent 45%),
+    radial-gradient(circle at 82% 78%, rgba(143, 29, 36, 0.12) 0%, transparent 50%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.012) 0px,
+      rgba(255, 255, 255, 0.012) 1px,
+      transparent 1px,
+      transparent 14px
+    ),
+    linear-gradient(160deg, #160e09 0%, #26170e 52%, #180f0a 100%);
+  color: var(--cream-paper);
+  font-family: var(--font-bn-sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.65;
+}
+
+body.lang-en {
+  font-family: 'Cormorant Garamond', var(--font-bn-sans), Georgia, serif;
+}
+
+/* Paper grain noise overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Typography helpers */
+.serif-title {
+  font-family: var(--font-bn-serif);
+  letter-spacing: 0.01em;
+}
+body.lang-en .serif-title {
+  font-family: var(--font-en-serif);
+}
+
+.script-accent {
+  font-family: var(--font-bn-script);
+}
+body.lang-en .script-accent {
+  font-family: var(--font-en-script);
+}
+
+/* ==========================================================================
+   TOP NAVIGATION BAR (Shared Across Pages)
+   ========================================================================== */
+.postal-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 5%;
+  background: rgba(24, 15, 10, 0.86);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--gold-dim);
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-decoration: none;
+  color: var(--cream-paper);
+}
+
+.brand-seal-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--wax-crimson-light), var(--wax-crimson));
+  border: 2px solid var(--gold-muted);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-bn-script);
+  color: var(--gold-bright);
+  font-size: 1.25rem;
+  box-shadow: 0 4px 12px rgba(143, 29, 36, 0.5);
+}
+
+.brand-text-wrap {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.brand-name {
+  font-family: var(--font-bn-serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--gold-bright);
+}
+
+.brand-sub {
+  font-size: 0.72rem;
+  color: var(--cream-dark);
+  opacity: 0.85;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--cream-aged);
+  font-size: 0.92rem;
+  font-weight: 500;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition: var(--transition-smooth);
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--gold-bright);
+  background: rgba(200, 162, 84, 0.12);
+  border-color: var(--gold-dim);
+}
+
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.pill-btn {
+  cursor: pointer;
+  background: rgba(40, 25, 16, 0.9);
+  color: var(--cream-paper);
+  border: 1px solid var(--gold-dim);
+  padding: 0.42rem 0.85rem;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.84rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: var(--transition-smooth);
+}
+
+.pill-btn:hover {
+  border-color: var(--gold-bright);
+  color: var(--gold-bright);
+  transform: translateY(-1px);
+}
+
+.pill-btn.active-sound {
+  background: rgba(200, 162, 84, 0.2);
+  border-color: var(--gold-bright);
+  color: var(--gold-bright);
+}
+
+/* Primary & Secondary Action Buttons */
+.btn-gold {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.82rem 1.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--gold-bright);
+  background: linear-gradient(135deg, #d7b162 0%, #a98134 100%);
+  color: #1c110a;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  box-shadow: 0 10px 26px rgba(200, 162, 84, 0.3);
+  transition: var(--transition-smooth);
+}
+
+.btn-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(229, 193, 113, 0.42);
+  filter: brightness(1.06);
+}
+
+.btn-crimson {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.82rem 1.65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(229, 193, 113, 0.45);
+  background: linear-gradient(135deg, var(--wax-crimson-light) 0%, #681217 100%);
+  color: var(--cream-paper);
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  box-shadow: 0 10px 26px rgba(143, 29, 36, 0.45);
+  transition: var(--transition-smooth);
+}
+
+.btn-crimson:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(184, 41, 50, 0.55);
+}
+
+.btn-outline {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.78rem 1.45rem;
+  border-radius: 999px;
+  border: 1px solid var(--gold-dim);
+  background: rgba(255, 248, 232, 0.04);
+  color: var(--cream-paper);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 0.96rem;
+  text-decoration: none;
+  transition: var(--transition-smooth);
+}
+
+.btn-outline:hover {
+  border-color: var(--gold-bright);
+  background: rgba(200, 162, 84, 0.12);
+  color: var(--gold-bright);
+}
+
+/* ==========================================================================
+   CINEMATIC 5-SCENE VINTAGE LETTERBOX INTRO OVERLAY (index.html)
+   ========================================================================== */
+#letterbox-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background:
+    radial-gradient(ellipse at 50% 25%, rgba(235, 178, 84, 0.24) 0%, rgba(45, 25, 13, 0.85) 55%, #0e0805 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: opacity 0.95s ease, visibility 0.95s ease;
+}
+
+#letterbox-intro.hidden-intro {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Golden hour sunbeams */
+.sunbeam-layer {
+  position: absolute;
+  inset: -20%;
+  background: conic-gradient(
+    from 135deg at 25% 15%,
+    transparent 0deg,
+    rgba(235, 187, 102, 0.11) 18deg,
+    transparent 38deg,
+    rgba(235, 187, 102, 0.08) 62deg,
+    transparent 90deg
+  );
+  animation: sunbeamDrift 16s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes sunbeamDrift {
+  0% { transform: rotate(-4deg) scale(1); opacity: 0.75; }
+  100% { transform: rotate(5deg) scale(1.06); opacity: 1; }
+}
+
+/* Floating golden dust particles */
+.dust-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.dust-mote {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 226, 158, 0.95), rgba(200, 162, 84, 0));
+  animation: floatDust linear infinite;
+}
+
+@keyframes floatDust {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  20% { opacity: 0.85; }
+  80% { opacity: 0.75; }
+  100% { transform: translateY(-140px) translateX(35px); opacity: 0; }
+}
+
+/* Intro Top Controls */
+.intro-top-bar {
+  position: absolute;
+  top: 1.25rem;
+  left: 5%;
+  right: 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 20;
+}
+
+/* Vintage Postal Alcove & 3D Letterbox */
+.alcove-stage {
+  position: relative;
+  width: min(92vw, 480px);
+  height: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+  z-index: 5;
+}
+
+/* Dried botanicals & stationery props around letterbox */
+.prop-dried-flowers {
+  position: absolute;
+  left: 12px;
+  bottom: 24px;
+  width: 95px;
+  height: 150px;
+  pointer-events: none;
+  filter: drop-shadow(0 12px 18px rgba(0,0,0,0.65));
+  animation: gentleSway 6s ease-in-out infinite alternate;
+}
+
+.prop-tied-letters {
+  position: absolute;
+  right: 10px;
+  bottom: 26px;
+  width: 105px;
+  height: 95px;
+  pointer-events: none;
+  filter: drop-shadow(0 12px 16px rgba(0,0,0,0.65));
+}
+
+@keyframes gentleSway {
+  0% { transform: rotate(-2deg); }
+  100% { transform: rotate(2.5deg); }
+}
+
+/* Antique Wooden & Brass Letterbox */
+.vintage-letterbox {
+  position: relative;
+  width: 250px;
+  height: 295px;
+  background: linear-gradient(145deg, #4b2b18 0%, #2b170c 60%, #1c0e07 100%);
+  border-radius: 115px 115px 14px 14px;
+  border: 3px solid #754a29;
+  box-shadow:
+    inset 0 4px 18px rgba(255, 212, 140, 0.16),
+    inset 0 -14px 26px rgba(0, 0, 0, 0.8),
+    0 28px 55px rgba(0, 0, 0, 0.82);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 34px;
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.7s ease;
+}
+
+.vintage-letterbox.zoom-out {
+  transform: scale(0.84) translateY(18px);
+  opacity: 0.25;
+}
+
+.brass-plaque {
+  background: linear-gradient(135deg, #d8b568, #8c6623);
+  color: #1e1209;
+  font-family: var(--font-bn-serif);
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  padding: 0.24rem 0.95rem;
+  border-radius: 4px;
+  border: 1px solid #f2d58c;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+  margin-bottom: 18px;
+}
+
+/* Brass Mail Slot */
+.mail-slot-housing {
+  position: relative;
+  width: 176px;
+  height: 34px;
+  background: #120905;
+  border-radius: 6px;
+  border: 2px solid #b58d43;
+  box-shadow: inset 0 6px 12px rgba(0,0,0,0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mail-slot-flap {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #cca352 0%, #8a6422 100%);
+  border-radius: 4px;
+  transform-origin: top center;
+  transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #241409;
+  letter-spacing: 0.15em;
+}
+
+.mail-slot-flap.open-slot {
+  transform: rotateX(72deg);
+}
+
+/* Envelope sliding inside slot */
+.slot-envelope {
+  position: absolute;
+  top: 8px;
+  width: 146px;
+  height: 88px;
+  background: linear-gradient(135deg, #fbf4e4, #e5d2ae);
+  border: 1px solid #bfa477;
+  border-radius: 4px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.55);
+  transform: translateY(-95px) scale(0.85);
+  opacity: 0;
+  transition: transform 0.95s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slot-envelope.arrived {
+  transform: translateY(10px) scale(0.95);
+  opacity: 1;
+}
+
+/* Lower Hinged Mailbox Door */
+.mailbox-door {
+  position: relative;
+  margin-top: 22px;
+  width: 176px;
+  height: 132px;
+  background: linear-gradient(145deg, #3b2112, #231209);
+  border: 2px solid #7d5230;
+  border-radius: 8px;
+  transform-origin: left center;
+  transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: inset 0 0 18px rgba(0,0,0,0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mailbox-door.door-swung {
+  transform: rotateY(-108deg);
+}
+
+.brass-knob {
+  position: absolute;
+  right: 14px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #f3d488, #8c631e);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.7);
+}
+
+/* Scene 4 Interactive Close-Up Envelope & Wax Seal */
+.closeup-envelope-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 15;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.75) translateY(30px);
+  transition: all 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.closeup-envelope-wrap.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1) translateY(0);
+}
+
+.hero-envelope {
+  position: relative;
+  width: min(88vw, 370px);
+  height: 235px;
+  background: linear-gradient(145deg, #f9f1df 0%, #e7d4b1 100%);
+  border-radius: 8px;
+  border: 1px solid #c5a878;
+  box-shadow: 0 28px 65px rgba(0, 0, 0, 0.85);
+  perspective: 1000px;
+}
+
+.hero-envelope-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 126px;
+  background: linear-gradient(180deg, #efe0c2 0%, #dcc397 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top center;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 4;
+  border-top: 1px solid #fff7e8;
+}
+
+.hero-envelope.opened .hero-envelope-flap {
+  transform: rotateX(180deg);
+  z-index: 1;
+}
+
+/* Interactive Crimson Wax Seal */
+.wax-seal-btn {
+  position: absolute;
+  top: 86px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  z-index: 6;
+  background: radial-gradient(circle at 32% 28%, #c7323b 0%, #8f1d24 62%, #590e13 100%);
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.55),
+    inset 0 2px 5px rgba(255, 190, 190, 0.35),
+    inset 0 -3px 6px rgba(40, 4, 7, 0.7);
+  color: #f4d389;
+  font-family: var(--font-bn-script);
+  font-size: 1.55rem;
+  display: grid;
+  place-items: center;
+  transition: transform 0.3s ease, opacity 0.45s ease;
+  animation: sealPulse 2.4s ease-in-out infinite;
+}
+
+.wax-seal-btn:hover {
+  transform: translateX(-50%) scale(1.08);
+}
+
+.wax-seal-btn.cracked {
+  animation: none;
+  transform: translateX(-50%) scale(1.25) rotate(14deg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes sealPulse {
+  0%, 100% { box-shadow: 0 8px 20px rgba(0,0,0,0.55), 0 0 0 0 rgba(200, 162, 84, 0.45); }
+  50% { box-shadow: 0 8px 24px rgba(0,0,0,0.6), 0 0 0 11px rgba(200, 162, 84, 0); }
+}
+
+/* Letter Sheet Sliding Out */
+.revealed-letter-card {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: 14px;
+  background: var(--cream-paper);
+  color: var(--ink-sepia);
+  border: 1px solid #cbb184;
+  border-radius: 6px;
+  padding: 1.35rem 1.25rem;
+  text-align: center;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.45);
+  transform: translateY(0) scale(0.95);
+  opacity: 0;
+  z-index: 3;
+  transition: all 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hero-envelope.opened .revealed-letter-card {
+  transform: translateY(-68px) scale(1.04);
+  opacity: 1;
+  z-index: 7;
+}
+
+.intro-caption-box {
+  position: relative;
+  z-index: 12;
+  text-align: center;
+  max-width: 540px;
+  padding: 0 1.25rem;
+  margin-top: 1.1rem;
+  min-height: 115px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+}
+
+.intro-caption-text {
+  font-family: var(--font-bn-serif);
+  font-size: clamp(1.2rem, 3vw, 1.62rem);
+  color: var(--cream-paper);
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.85);
+  transition: opacity 0.45s ease;
+}
+
+/* ==========================================================================
+   MAIN LANDING HUB & SHARED LAYOUT CONTAINERS
+   ========================================================================== */
+.container {
+  width: min(92%, 1160px);
+  margin: 0 auto;
+  padding: 2.4rem 0 4.5rem;
+}
+
+.hero-hub {
+  text-align: center;
+  padding: 2.2rem 1rem 2.8rem;
+  position: relative;
+}
+
+.postmark-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 1rem;
+  border-radius: 999px;
+  border: 1px dashed var(--gold-muted);
+  background: rgba(200, 162, 84, 0.08);
+  color: var(--gold-bright);
+  font-size: 0.84rem;
+  margin-bottom: 1.1rem;
+}
+
+.hero-hub h1 {
+  font-size: clamp(2rem, 4.6vw, 3.35rem);
+  line-height: 1.24;
+  color: var(--cream-paper);
+  margin-bottom: 0.9rem;
+}
+
+.hero-hub p {
+  max-width: 660px;
+  margin: 0 auto 1.9rem;
+  color: var(--cream-aged);
+  font-size: 1.08rem;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* 3-Column Feature & Navigation Cards */
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 1.45rem;
+  margin-top: 2.4rem;
+}
+
+.vintage-card {
+  background: linear-gradient(155deg, rgba(48, 30, 19, 0.92) 0%, rgba(28, 17, 11, 0.96) 100%);
+  border: 1px solid var(--gold-dim);
+  border-radius: 16px;
+  padding: 1.65rem;
+  box-shadow: var(--shadow-card);
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.vintage-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--gold-bright);
+}
+
+.card-icon-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(200, 162, 84, 0.14);
+  border: 1px solid var(--gold-dim);
+  display: grid;
+  place-items: center;
+  font-size: 1.45rem;
+  margin-bottom: 1rem;
+  color: var(--gold-bright);
+}
+
+.vintage-card h3 {
+  font-size: 1.28rem;
+  color: var(--gold-bright);
+  margin-bottom: 0.5rem;
+}
+
+.vintage-card p {
+  color: var(--cream-aged);
+  font-size: 0.96rem;
+  margin-bottom: 1.2rem;
+}
+
+/* ==========================================================================
+   WRITING DESK (write.html) & LIVE HAND + FOUNTAIN PEN ANIMATION
+   ========================================================================== */
+.desk-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 1.75rem;
+  align-items: start;
+}
+
+@media (max-width: 920px) {
+  .desk-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.parchment-sheet {
+  position: relative;
+  background-color: var(--cream-paper);
+  background-image:
+    repeating-linear-gradient(
+      transparent,
+      transparent 35px,
+      rgba(139, 108, 72, 0.17) 36px
+    );
+  color: var(--ink-sepia);
+  border-radius: 10px;
+  padding: 2.2rem 2rem 2.6rem;
+  box-shadow: var(--shadow-ambient);
+  border: 1px solid #cbb184;
+  min-height: 520px;
+  transition: background-color 0.45s ease, color 0.45s ease;
+  overflow: hidden;
+}
+
+.parchment-sheet.theme-rose {
+  background-color: var(--parchment-rose);
+  border-color: #d4a69c;
+}
+
+.parchment-sheet.theme-mint {
+  background-color: var(--parchment-mint);
+  border-color: #9fb89d;
+}
+
+.parchment-sheet.theme-night {
+  background-color: var(--parchment-night);
+  background-image:
+    repeating-linear-gradient(
+      transparent,
+      transparent 35px,
+      rgba(229, 193, 113, 0.14) 36px
+    );
+  color: #f3e6cb;
+  border-color: #5c4b2b;
+}
+
+/* Circular Vintage Postmark Stamp on Paper */
+.paper-postmark {
+  position: absolute;
+  top: 1.35rem;
+  right: 1.45rem;
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  border: 2px double rgba(143, 29, 36, 0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.45rem;
+  transform: rotate(-11deg);
+  color: rgba(143, 29, 36, 0.72);
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.25;
+  pointer-events: none;
+  user-select: none;
+}
+
+.parchment-sheet.theme-night .paper-postmark {
+  border-color: rgba(229, 193, 113, 0.55);
+  color: rgba(229, 193, 113, 0.78);
+}
+
+.letter-header-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-bottom: 1.15rem;
+  padding-right: 120px;
+}
+
+.paper-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed rgba(94, 73, 58, 0.35);
+  color: inherit;
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 0.35rem 0.2rem;
+  outline: none;
+}
+
+.paper-input::placeholder {
+  color: inherit;
+  opacity: 0.52;
+}
+
+.writing-area-wrapper {
+  position: relative;
+  min-height: 310px;
+}
+
+.letter-textarea {
+  width: 100%;
+  min-height: 310px;
+  background: transparent;
+  border: none;
+  resize: vertical;
+  color: inherit;
+  font-family: var(--font-bn-serif);
+  font-size: 1.16rem;
+  line-height: 36px;
+  outline: none;
+  position: relative;
+  z-index: 2;
+}
+
+body.lang-en .letter-textarea {
+  font-family: var(--font-en-script);
+  font-size: 1.48rem;
+}
+
+/* Mirror div for exact caret coordinate tracking */
+.caret-mirror {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  visibility: hidden;
+  pointer-events: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: var(--font-bn-serif);
+  font-size: 1.16rem;
+  line-height: 36px;
+}
+
+body.lang-en .caret-mirror {
+  font-family: var(--font-en-script);
+  font-size: 1.48rem;
+}
+
+/* Articulated Artist Hand & Gold Fountain Pen Overlay */
+.animated-hand-pen {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  width: 155px;
+  height: 155px;
+  pointer-events: none;
+  z-index: 8;
+  transform-origin: 6px 144px; /* Nib tip at bottom-left of SVG */
+  transition: transform 0.14s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+  filter: drop-shadow(0 12px 14px rgba(25, 14, 7, 0.34));
+  opacity: 0.92;
+}
+
+.animated-hand-pen.writing-stroke {
+  animation: nibStroke 0.22s ease-in-out;
+}
+
+@keyframes nibStroke {
+  0% { transform: translate(var(--pen-x, 20px), var(--pen-y, 20px)) rotate(0deg); }
+  50% { transform: translate(calc(var(--pen-x, 20px) + 3px), calc(var(--pen-y, 20px) - 4px)) rotate(-5deg); }
+  100% { transform: translate(var(--pen-x, 20px), var(--pen-y, 20px)) rotate(0deg); }
+}
+
+.ink-sparkle {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #e5c171, transparent);
+  pointer-events: none;
+  z-index: 7;
+  animation: inkFade 0.65s ease-out forwards;
+}
+
+@keyframes inkFade {
+  0% { transform: scale(0.5); opacity: 0.95; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* Desk Sidebar Controls */
+.desk-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.control-panel {
+  background: rgba(34, 21, 13, 0.92);
+  border: 1px solid var(--gold-dim);
+  border-radius: 14px;
+  padding: 1.2rem;
+}
+
+.control-panel h4 {
+  color: var(--gold-bright);
+  font-size: 0.98rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.swatch-row {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.swatch-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.swatch-btn.selected, .swatch-btn:hover {
+  transform: scale(1.14);
+  border-color: var(--gold-bright);
+  box-shadow: 0 0 0 3px rgba(229, 193, 113, 0.25);
+}
+
+.vintage-select, .vintage-input {
+  width: 100%;
+  background: rgba(20, 12, 7, 0.9);
+  border: 1px solid var(--gold-dim);
+  color: var(--cream-paper);
+  padding: 0.58rem 0.75rem;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.92rem;
+  outline: none;
+}
+
+.vintage-select:focus, .vintage-input:focus {
+  border-color: var(--gold-bright);
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  color: var(--cream-aged);
+}
+
+/* ==========================================================================
+   BURN AFTER READING ANIMATION (open.html)
+   ========================================================================== */
+.parchment-sheet.burning {
+  animation: burnParchment 2.6s ease-in forwards;
+  pointer-events: none;
+}
+
+@keyframes burnParchment {
+  0% {
+    filter: brightness(1) sepia(0);
+    box-shadow: 0 0 20px rgba(255, 115, 0, 0.4);
+  }
+  40% {
+    filter: brightness(0.75) sepia(0.85) contrast(1.4);
+    box-shadow: 0 0 55px rgba(255, 85, 0, 0.85), inset 0 0 60px rgba(255, 60, 0, 0.75);
+    transform: scale(0.98) rotate(-0.5deg);
+  }
+  80% {
+    filter: brightness(0.25) grayscale(1);
+    opacity: 0.45;
+    transform: scale(0.92) translateY(14px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.85) translateY(30px);
+  }
+}
+
+/* ==========================================================================
+   MODALS, TOASTS & RESPONSIVE RULES
+   ========================================================================== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 6, 3, 0.82);
+  backdrop-filter: blur(8px);
+  z-index: 8000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2rem;
+}
+
+.modal-backdrop.show {
+  display: flex;
+}
+
+.modal-card {
+  width: min(94vw, 500px);
+  background: linear-gradient(155deg, #2d1b11, #190f09);
+  border: 1px solid var(--gold-bright);
+  border-radius: 16px;
+  padding: 1.75rem;
+  box-shadow: var(--shadow-ambient);
+  color: var(--cream-paper);
+}
+
+.toast-banner {
+  position: fixed;
+  bottom: 1.4rem;
+  right: 1.4rem;
+  z-index: 9500;
+  background: #23140c;
+  border: 1px solid var(--gold-bright);
+  color: var(--cream-paper);
+  padding: 0.75rem 1.2rem;
+  border-radius: 10px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65);
+  font-size: 0.92rem;
+  transform: translateY(120%);
+  opacity: 0;
+  transition: all 0.35s ease;
+}
+
+.toast-banner.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .postal-nav {
+    padding: 0.75rem 4%;
+  }
+  .parchment-sheet {
+    padding: 1.5rem 1.15rem 2rem;
+  }
+  .paper-postmark {
+    width: 86px;
+    height: 86px;
+    font-size: 0.58rem;
+  }
+  .letter-header-inputs {
+    padding-right: 92px;
+  }
+}
+
+
+/* ==========================================================================
+   V2 UPGRADES: REALISTIC ARTICULATED HAND & PEN, MUSIC STRIP & OCCASION THEMES
+   ========================================================================== */
+.animated-hand-pen {
+  width: 210px !important;
+  height: 210px !important;
+  transform-origin: 12px 196px !important; /* Exact gold nib tip */
+  transition: transform 0.09s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease !important;
+  will-change: transform;
+}
+
+.animated-hand-pen.idle-hover {
+  animation: handIdleBreathe 2.8s ease-in-out infinite;
+}
+
+@keyframes handIdleBreathe {
+  0%, 100% {
+    transform: translate(calc(var(--pen-x, 20px) + 4px), calc(var(--pen-y, 20px) - 7px)) rotate(2deg);
+  }
+  50% {
+    transform: translate(calc(var(--pen-x, 20px) + 7px), calc(var(--pen-y, 20px) - 11px)) rotate(4.5deg);
+  }
+}
+
+.animated-hand-pen .nib-shadow {
+  transition: transform 0.12s ease, opacity 0.12s ease;
+  transform-origin: 12px 196px;
+}
+
+.animated-hand-pen.idle-hover .nib-shadow {
+  transform: translate(8px, 10px) scale(1.18);
+  opacity: 0.45;
+}
+
+/* Vintage Gramophone / Song Dedication Strip on Opened Letter */
+.letter-music-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: rgba(143, 29, 36, 0.09);
+  border: 1px dashed rgba(143, 29, 36, 0.4);
+  border-radius: 10px;
+  padding: 0.65rem 0.95rem;
+  margin-bottom: 1.15rem;
+  flex-wrap: wrap;
+}
+
+.parchment-sheet.theme-night .letter-music-strip {
+  background: rgba(229, 193, 113, 0.12);
+  border-color: rgba(229, 193, 113, 0.45);
+}
+
+.vinyl-disc {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #e5c171 0%, #e5c171 22%, #1a110b 24%, #2d1e15 60%, #110a06 100%);
+  border: 1px solid var(--gold-muted);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.vinyl-disc.spinning {
+  animation: spinVinyl 4s linear infinite;
+}
+
+@keyframes spinVinyl {
+  100% { transform: rotate(360deg); }
+}
+
+/* Occasion Banner Badge */
+.occasion-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.28rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: rgba(200, 162, 84, 0.16);
+  border: 1px solid var(--gold-muted);
+  color: var(--gold-bright);
+}
+
+
+/* ==========================================================================
+   V4 UPGRADE: TOP NAVBAR SONG CHANGER & PERSISTENT AUDIO BAR
+   ========================================================================== */
+.nav-music-group {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(40, 25, 16, 0.92);
+  border: 1px solid var(--gold-dim);
+  border-radius: 999px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.nav-music-group .pill-btn {
+  border: none;
+  background: transparent;
+  padding: 0.36rem 0.72rem;
+}
+
+.nav-music-group .pill-btn.active-sound {
+  background: rgba(200, 162, 84, 0.22);
+  color: var(--gold-bright);
+}
+
+.nav-song-select {
+  background: rgba(22, 13, 8, 0.85);
+  color: var(--cream-paper);
+  border: 1px solid rgba(200, 162, 84, 0.25);
+  border-radius: 999px;
+  padding: 0.34rem 0.65rem;
+  font-family: inherit;
+  font-size: 0.8rem;
+  max-width: 165px;
+  outline: none;
+  cursor: pointer;
+  text-overflow: ellipsis;
+}
+
+.nav-song-select:hover, .nav-song-select:focus {
+  border-color: var(--gold-bright);
+  color: var(--gold-bright);
+}
+
+.nav-next-btn {
+  background: transparent;
+  border: none;
+  color: var(--cream-aged);
+  cursor: pointer;
+  padding: 0.32rem 0.55rem;
+  border-radius: 50%;
+  font-size: 0.82rem;
+  transition: var(--transition-smooth);
+}
+
+.nav-next-btn:hover {
+  color: var(--gold-bright);
+  background: rgba(200, 162, 84, 0.16);
+}
+
+@media (max-width: 600px) {
+  .nav-song-select {
+    max-width: 118px;
+    font-size: 0.75rem;
+  }
+}
+
+
+/* ==========================================================================
+   V6 UPGRADE: VINTAGE STATIONERY EMBLEM LOGO & CREATOR CREDIT SECTION
+   ========================================================================== */
+.brand-logo-img {
+  height: 46px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.55));
+  transition: transform 0.35s ease;
+}
+
+.brand-logo:hover .brand-logo-img {
+  transform: scale(1.04);
+}
+
+.hero-emblem-showcase {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto 1.1rem;
+}
+
+.hero-emblem-img {
+  width: min(84vw, 340px);
+  height: auto;
+  filter: drop-shadow(0 18px 34px rgba(0, 0, 0, 0.72));
+  animation: emblemFloat 5.5s ease-in-out infinite alternate;
+}
+
+@keyframes emblemFloat {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-6px); }
+}
+
+.intro-emblem-img {
+  width: min(68vw, 220px);
+  height: auto;
+  margin: 0 auto 0.35rem;
+  display: block;
+  filter: drop-shadow(0 6px 14px rgba(44, 30, 22, 0.25));
+}
+
+/* Featured Creator & Developer Credit Card */
+.creator-credit-section {
+  margin-top: 3.4rem;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(200, 162, 84, 0.14), transparent 50%),
+    linear-gradient(155deg, rgba(46, 28, 17, 0.96) 0%, rgba(24, 14, 9, 0.98) 100%);
+  border: 1px solid var(--gold-muted);
+  border-radius: 20px;
+  padding: 2.1rem 2rem;
+  box-shadow: var(--shadow-ambient);
+  position: relative;
+  overflow: hidden;
+}
+
+.creator-credit-section::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px dashed rgba(200, 162, 84, 0.24);
+  border-radius: 14px;
+  pointer-events: none;
+}
+
+.creator-grid {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 1.85rem;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 720px) {
+  .creator-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+    justify-items: center;
+  }
+}
+
+.creator-portrait-frame {
+  position: relative;
+  width: 158px;
+  height: 158px;
+  border-radius: 50%;
+  padding: 5px;
+  background: linear-gradient(135deg, var(--gold-bright), #7a5418, var(--gold-bright));
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.68);
+}
+
+.creator-portrait-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+  border: 3px solid var(--walnut-deep);
+  display: block;
+}
+
+.creator-wax-badge {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, var(--wax-crimson-light), var(--wax-crimson));
+  border: 2px solid var(--gold-bright);
+  color: var(--gold-bright);
+  font-family: var(--font-bn-script);
+  font-size: 1.15rem;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+.creator-social-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 1.1rem;
+}
+
+@media (max-width: 720px) {
+  .creator-social-row {
+    justify-content: center;
+  }
+}
+
+.social-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.05rem;
+  border-radius: 999px;
+  background: rgba(255, 248, 232, 0.06);
+  border: 1px solid var(--gold-dim);
+  color: var(--cream-paper);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: var(--transition-smooth);
+}
+
+.social-pill:hover {
+  border-color: var(--gold-bright);
+  background: rgba(200, 162, 84, 0.18);
+  color: var(--gold-bright);
+  transform: translateY(-2px);
+}
+
+.social-pill svg {
+  width: 17px;
+  height: 17px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+/* Shared Postal Footer Bar Across All Pages */
+.postal-footer {
+  margin-top: 3.5rem;
+  padding: 1.5rem 5%;
+  background: rgba(18, 11, 7, 0.92);
+  border-top: 1px solid var(--gold-dim);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.88rem;
+  color: var(--cream-aged);
+}
+
+.footer-dev-mini {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.footer-dev-mini img {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid var(--gold-bright);
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+
+/* ==========================================================================
+   V7 UPGRADE: PHOTOREALISTIC SUNLIT WALNUT WRITING DESK (image_2c7746 style)
+   ========================================================================== */
+.desk-scene-stage {
+  position: relative;
+  border-radius: 20px;
+  padding: 2.6rem 2.3rem 2.8rem;
+  background-color: #4b2b17;
+  background-image:
+    /* Warm morning sunlight beam from top-left window */
+    radial-gradient(ellipse at 12% 8%, rgba(255, 232, 182, 0.42) 0%, rgba(242, 194, 120, 0.16) 38%, transparent 72%),
+    /* Soft diagonal window-pane shadow */
+    linear-gradient(128deg, rgba(255, 236, 195, 0.14) 0%, rgba(255, 236, 195, 0.05) 36%, rgba(16, 8, 3, 0.36) 68%, rgba(12, 6, 2, 0.55) 100%),
+    /* Organic walnut wood grain streaks */
+    repeating-linear-gradient(
+      148deg,
+      rgba(26, 12, 5, 0.14) 0px,
+      rgba(26, 12, 5, 0.14) 2px,
+      transparent 2px,
+      transparent 9px,
+      rgba(128, 76, 40, 0.12) 9px,
+      rgba(128, 76, 40, 0.12) 13px,
+      transparent 13px,
+      transparent 24px
+    ),
+    linear-gradient(155deg, #6d4125 0%, #4e2d18 52%, #311a0d 100%);
+  border: 1px solid rgba(229, 193, 113, 0.36);
+  box-shadow:
+    inset 0 2px 24px rgba(255, 224, 165, 0.18),
+    inset 0 -18px 36px rgba(10, 5, 2, 0.55),
+    0 28px 65px rgba(8, 4, 1, 0.72);
+  overflow: hidden;
+}
+
+/* Sheer Cream Window Curtain Drape (Top-Left Corner) */
+.desk-curtain-drape {
+  position: absolute;
+  top: -12px;
+  left: -14px;
+  width: 195px;
+  height: 150px;
+  background:
+    repeating-linear-gradient(
+      102deg,
+      rgba(255, 249, 236, 0.88) 0px,
+      rgba(241, 226, 198, 0.62) 14px,
+      rgba(255, 252, 245, 0.94) 28px
+    );
+  clip-path: polygon(0 0, 100% 0, 68% 72%, 22% 100%, 0 100%);
+  filter: blur(0.4px) drop-shadow(10px 14px 22px rgba(255, 226, 168, 0.35));
+  opacity: 0.78;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Dried Golden & Amber Flower Bouquet (Top-Right Corner) */
+.desk-flower-bouquet {
+  position: absolute;
+  top: -18px;
+  right: -18px;
+  width: 245px;
+  height: 225px;
+  pointer-events: none;
+  z-index: 4;
+  filter: drop-shadow(-8px 16px 18px rgba(15, 7, 2, 0.58));
+  transform-origin: 85% 18%;
+  animation: bouquetBreeze 7s ease-in-out infinite alternate;
+}
+
+@keyframes bouquetBreeze {
+  0% { transform: rotate(0deg) scale(1); }
+  100% { transform: rotate(-1.8deg) scale(1.015); }
+}
+
+/* Two Serrated Vintage Postage Stamps on Walnut Desk (Bottom-Left) */
+.desk-stamps-cluster {
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+  width: 132px;
+  height: 145px;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.vintage-postage-stamp {
+  position: absolute;
+  width: 74px;
+  height: 88px;
+  padding: 5px;
+  background: #f5ebd6;
+  box-shadow: 0 8px 16px rgba(12, 6, 2, 0.55);
+  /* Perforated stamp edge effect */
+  background-image:
+    radial-gradient(circle at 0 50%, transparent 2.5px, #f5ebd6 3px),
+    radial-gradient(circle at 100% 50%, transparent 2.5px, #f5ebd6 3px);
+  border: 2px dotted rgba(92, 58, 36, 0.55);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: var(--font-bn-serif);
+}
+
+.stamp-sepia {
+  top: 0;
+  left: 4px;
+  transform: rotate(-16deg);
+}
+
+.stamp-sepia .stamp-art {
+  flex: 1;
+  background: linear-gradient(145deg, #8c5c38, #5c371e);
+  border: 1px solid #4a2a14;
+  display: grid;
+  place-items: center;
+  color: #f6eedc;
+  font-size: 0.62rem;
+  text-align: center;
+  padding: 2px;
+}
+
+.stamp-sage {
+  bottom: 2px;
+  left: 34px;
+  transform: rotate(-32deg);
+}
+
+.stamp-sage .stamp-art {
+  flex: 1;
+  background: linear-gradient(145deg, #567358, #374d39);
+  border: 1px solid #293b2b;
+  display: grid;
+  place-items: center;
+  color: #f6eedc;
+  font-size: 0.62rem;
+  text-align: center;
+  padding: 2px;
+}
+
+.stamp-caption {
+  font-size: 0.5rem;
+  font-weight: 700;
+  color: #3d2618;
+  text-align: center;
+  padding-top: 2px;
+  letter-spacing: 0.03em;
+}
+
+/* Layered Kraft Paper Envelope Backing Behind Letter Sheet */
+.kraft-envelope-stack {
+  position: relative;
+  max-width: 650px;
+  margin: 0.4rem auto 0.6rem;
+  z-index: 3;
+}
+
+.kraft-envelope-backing {
+  position: absolute;
+  inset: -14px -18px -16px -16px;
+  background:
+    linear-gradient(135deg, rgba(255, 240, 210, 0.14) 0%, transparent 55%),
+    linear-gradient(150deg, #cfa97a 0%, #b89060 55%, #9e7748 100%);
+  border-radius: 6px;
+  border: 1px solid rgba(110, 76, 40, 0.45);
+  box-shadow:
+    0 22px 46px rgba(10, 4, 1, 0.68),
+    inset 0 1px 0 rgba(255, 244, 222, 0.45);
+  transform: rotate(-3.4deg);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Subtle diagonal envelope flap crease on kraft backing */
+.kraft-envelope-backing::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 90px;
+  background: linear-gradient(180deg, rgba(84, 54, 24, 0.14), transparent);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+/* Crisp Layered Cotton-Rag Letter Sheet on Top of Kraft Envelope */
+.desk-scene-stage .parchment-sheet {
+  position: relative;
+  z-index: 2;
+  background-color: #fbf5e8;
+  box-shadow:
+    0 14px 32px rgba(24, 12, 4, 0.36),
+    0 2px 6px rgba(24, 12, 4, 0.2);
+  transform: rotate(-0.6deg);
+  transition: transform 0.4s ease, background-color 0.45s ease, color 0.45s ease;
+}
+
+.desk-scene-stage .parchment-sheet:focus-within {
+  transform: rotate(0deg);
+}
+
+.desk-scene-stage .parchment-sheet.theme-rose {
+  background-color: var(--parchment-rose);
+}
+.desk-scene-stage .parchment-sheet.theme-mint {
+  background-color: var(--parchment-mint);
+}
+.desk-scene-stage .parchment-sheet.theme-night {
+  background-color: var(--parchment-night);
+}
+
+/* ==========================================================================
+   LUXURY BLACK & GOLD FOUNTAIN PEN + NATURAL HAND ANIMATION
+   ========================================================================== */
+.fountain-pen-rig {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 235px;
+  height: 235px;
+  pointer-events: none;
+  z-index: 12;
+  /* Exact gold nib tip is at SVG coordinate (14, 220) */
+  transform-origin: 14px 220px;
+  transition:
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.35s ease;
+  will-change: transform;
+}
+
+/* Fast responsive tracking while actively typing */
+.fountain-pen-rig.actively-writing {
+  transition: transform 0.085s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Resting diagonally on the right side of the parchment like image_2c7746 */
+.fountain-pen-rig.resting-on-desk {
+  transform: translate(calc(var(--desk-w, 520px) - 72px), 36px) rotate(24deg) !important;
+}
+
+.fountain-pen-rig .writer-hand-group {
+  opacity: 0;
+  transform: translate(12px, -10px);
+  transition: opacity 0.38s ease, transform 0.38s ease;
+}
+
+.fountain-pen-rig.actively-writing .writer-hand-group {
+  opacity: 0.94;
+  transform: translate(0px, 0px);
+}
+
+.fountain-pen-rig .pen-desk-shadow {
+  transition: transform 0.35s ease, opacity 0.35s ease;
+}
+
+.fountain-pen-rig.resting-on-desk .pen-desk-shadow {
+  transform: translate(6px, 12px);
+  opacity: 0.34;
+}
+
+.fountain-pen-rig.pen-hidden {
+  opacity: 0 !important;
+}
+
+@media (max-width: 680px) {
+  .desk-scene-stage {
+    padding: 1.35rem 0.9rem 1.8rem;
+  }
+  .kraft-envelope-backing {
+    inset: -7px -8px -9px -7px;
+  }
+  .desk-flower-bouquet {
+    width: 145px;
+    height: 135px;
+    opacity: 0.85;
+  }
+  .desk-stamps-cluster {
+    transform: scale(0.72);
+    transform-origin: bottom left;
+    bottom: 6px;
+    left: 6px;
+  }
+}
+
+
+/* ==========================================================================
+   V8 UPGRADE: "HOW TO WRITE & SEND" TUTORIAL SECTION & INTERACTIVE MODAL
+   ========================================================================== */
+.tutorial-showcase-section {
+  margin-top: 2.6rem;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(155deg, rgba(44, 27, 17, 0.94) 0%, rgba(23, 14, 9, 0.97) 100%);
+  border: 1px solid var(--gold-dim);
+  border-radius: 20px;
+  padding: 2.2rem 1.8rem;
+  box-shadow: var(--shadow-card);
+  position: relative;
+}
+
+.tutorial-steps-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
+  gap: 1.15rem;
+  margin-top: 1.5rem;
+}
+
+.tutorial-step-card {
+  background: rgba(255, 248, 232, 0.035);
+  border: 1px solid rgba(200, 162, 84, 0.22);
+  border-radius: 14px;
+  padding: 1.35rem 1.2rem;
+  position: relative;
+  transition: var(--transition-smooth);
+}
+
+.tutorial-step-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--gold-bright);
+  background: rgba(200, 162, 84, 0.08);
+}
+
+.step-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: radial-gradient(circle at 35% 30%, var(--wax-crimson-light), var(--wax-crimson));
+  border: 1.5px solid var(--gold-bright);
+  font-size: 1.25rem;
+  margin-bottom: 0.85rem;
+  box-shadow: 0 6px 14px rgba(143, 29, 36, 0.45);
+}
+
+.tutorial-step-card h4 {
+  color: var(--gold-bright);
+  font-size: 1.08rem;
+  margin-bottom: 0.45rem;
+}
+
+.tutorial-step-card p {
+  color: var(--cream-aged);
+  font-size: 0.9rem;
+  line-height: 1.58;
+}
+
+/* Interactive Guide Modal */
+.guide-modal-card {
+  width: min(95vw, 720px);
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 1.85rem;
+}
+
+.guide-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.15rem;
+}
+
+.guide-tabs {
+  display: flex;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.2rem;
+  border-bottom: 1px solid var(--gold-dim);
+  padding-bottom: 0.75rem;
+}
+
+.guide-tab-btn {
+  cursor: pointer;
+  background: rgba(255, 248, 232, 0.05);
+  color: var(--cream-aged);
+  border: 1px solid var(--gold-dim);
+  padding: 0.5rem 1.05rem;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: var(--transition-smooth);
+}
+
+.guide-tab-btn.active, .guide-tab-btn:hover {
+  background: linear-gradient(135deg, #d7b162 0%, #a98134 100%);
+  color: #1c110a;
+  border-color: var(--gold-bright);
+}
+
+.guide-steps-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+}
+
+.guide-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.95rem;
+  background: rgba(16, 9, 5, 0.55);
+  border: 1px solid rgba(200, 162, 84, 0.22);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+}
+
+.guide-step-num {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(200, 162, 84, 0.16);
+  border: 1px solid var(--gold-bright);
+  color: var(--gold-bright);
+  font-weight: 700;
+  font-size: 0.88rem;
+  display: grid;
+  place-items: center;
+}
+
+.guide-step-heading {
+  font-weight: 700;
+  color: var(--gold-bright);
+  font-size: 1.02rem;
+  margin-bottom: 0.25rem;
+}
+
+.guide-step-desc {
+  color: var(--cream-paper);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.guide-modal-footer {
+  margin-top: 1.35rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--gold-dim);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+
+/* ==========================================================================
+   V11 AESTHETIC ARTWORK THEMES, 12+ FONTS & MULTI-PAGE CUSTOMIZER
+   ========================================================================== */
+
+/* 1. Multi-Page Artwork Themes Using User's Uploaded Vintage Pictures */
+body.bg-art-chitthi-box {
+  background: linear-gradient(rgba(18, 10, 5, 0.78), rgba(14, 8, 4, 0.86)), url('../assets/theme-chitthi-box.jpg') center/cover fixed no-repeat !important;
+}
+body.bg-art-sunlit-window {
+  background: linear-gradient(rgba(18, 10, 5, 0.74), rgba(14, 8, 4, 0.84)), url('../assets/theme-sunlit-window.jpg') center/cover fixed no-repeat !important;
+}
+body.bg-art-calcutta-postbox {
+  background: linear-gradient(rgba(18, 10, 5, 0.76), rgba(14, 8, 4, 0.86)), url('../assets/theme-calcutta-postbox.jpg') center/cover fixed no-repeat !important;
+}
+body.bg-art-kundakali {
+  background: linear-gradient(rgba(18, 10, 5, 0.78), rgba(14, 8, 4, 0.88)), url('../assets/theme-kundakali-wall.jpg') center/cover fixed no-repeat !important;
+}
+body.bg-art-vintage-tv {
+  background: linear-gradient(rgba(22, 8, 8, 0.78), rgba(14, 6, 6, 0.88)), url('../assets/theme-vintage-tv.jpg') center/cover fixed no-repeat !important;
+}
+
+/* Desk Stage Backdrop Switcher (Per Page or Whole Letter) */
+.desk-scene-stage.desk-theme-sunlit-window {
+  background-image:
+    linear-gradient(135deg, rgba(22, 12, 6, 0.62), rgba(14, 8, 4, 0.76)),
+    url('../assets/theme-sunlit-window.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+}
+.desk-scene-stage.desk-theme-chitthi-box {
+  background-image:
+    linear-gradient(135deg, rgba(24, 14, 6, 0.58), rgba(16, 9, 4, 0.74)),
+    url('../assets/theme-chitthi-box.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+}
+.desk-scene-stage.desk-theme-calcutta-postbox {
+  background-image:
+    linear-gradient(135deg, rgba(20, 11, 6, 0.60), rgba(12, 7, 4, 0.76)),
+    url('../assets/theme-calcutta-postbox.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+}
+.desk-scene-stage.desk-theme-kundakali {
+  background-image:
+    linear-gradient(135deg, rgba(22, 14, 8, 0.62), rgba(14, 9, 5, 0.78)),
+    url('../assets/theme-kundakali-wall.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+}
+.desk-scene-stage.desk-theme-vintage-tv {
+  background-image:
+    linear-gradient(135deg, rgba(28, 8, 8, 0.62), rgba(14, 5, 5, 0.78)),
+    url('../assets/theme-vintage-tv.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+}
+
+/* Candlelight Dim / Light Off Mode */
+body.candle-dim-mode {
+  background: radial-gradient(circle at 86% 24%, #241307 0%, #070402 65%, #020101 100%) !important;
+}
+body.candle-dim-mode .desk-scene-stage {
+  box-shadow: inset 0 0 110px rgba(0, 0, 0, 0.88), 0 28px 65px rgba(0, 0, 0, 0.9) !important;
+}
+
+/* 2. Authentic Perforated Vintage Stamps Using Uploaded Dhaka & Bangladesh Stamp Art */
+.real-stamp-card {
+  position: absolute;
+  top: 1.05rem;
+  right: 7.5rem;
+  width: 64px;
+  height: 78px;
+  padding: 4px;
+  background: #fbf5e8;
+  border: 2px dotted rgba(92, 58, 36, 0.75);
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.32);
+  transform: rotate(5deg);
+  z-index: 4;
+  pointer-events: none;
+  overflow: hidden;
+  transition: transform 0.35s ease;
+}
+.real-stamp-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 3. Guaranteed Live Font Switching (12 Literary & Handwritten Fonts) */
+.font-noto-serif,
+body.lang-en .font-noto-serif {
+  font-family: 'Noto Serif Bengali', 'Cormorant Garamond', Georgia, serif !important;
+  font-size: 1.16rem !important;
+}
+.font-galada,
+body.lang-en .font-galada {
+  font-family: 'Galada', 'Caveat', cursive !important;
+  font-size: 1.38rem !important;
+}
+.font-atma,
+body.lang-en .font-atma {
+  font-family: 'Atma', 'Caveat', cursive !important;
+  font-size: 1.24rem !important;
+}
+.font-tiro,
+body.lang-en .font-tiro {
+  font-family: 'Tiro Bangla', 'Playfair Display', Georgia, serif !important;
+  font-size: 1.16rem !important;
+}
+.font-tiro-italic,
+body.lang-en .font-tiro-italic {
+  font-family: 'Tiro Bangla', 'Playfair Display', Georgia, serif !important;
+  font-style: italic !important;
+  font-size: 1.18rem !important;
+}
+.font-hind,
+body.lang-en .font-hind {
+  font-family: 'Hind Siliguri', sans-serif !important;
+  font-size: 1.12rem !important;
+}
+.font-baloo,
+body.lang-en .font-baloo {
+  font-family: 'Baloo Da 2', cursive !important;
+  font-size: 1.16rem !important;
+}
+.font-mina,
+body.lang-en .font-mina {
+  font-family: 'Mina', sans-serif !important;
+  font-size: 1.12rem !important;
+}
+.font-anek,
+body.lang-en .font-anek {
+  font-family: 'Anek Bangla', sans-serif !important;
+  font-size: 1.12rem !important;
+}
+.font-caveat,
+body.lang-en .font-caveat {
+  font-family: 'Caveat', 'Galada', cursive !important;
+  font-size: 1.46rem !important;
+}
+.font-dancing,
+body.lang-en .font-dancing {
+  font-family: 'Dancing Script', 'Galada', cursive !important;
+  font-size: 1.42rem !important;
+}
+.font-great-vibes,
+body.lang-en .font-great-vibes {
+  font-family: 'Great Vibes', 'Galada', cursive !important;
+  font-size: 1.52rem !important;
+}
+
+/* Multi-Pen Ink Colors & Textures */
+.pen-fountain { color: #2c1e16; }
+.pen-pencil { color: #4d4a46 !important; text-shadow: 0 0 0.6px rgba(45,45,45,0.45); }
+.pen-quill { color: #192f63 !important; }
+.pen-crimson-ink { color: #7d171e !important; }
+.parchment-sheet.theme-night .pen-fountain { color: #f3e6cb !important; }
+.parchment-sheet.theme-night .pen-pencil { color: #d5d2cc !important; }
+.parchment-sheet.theme-night .pen-quill { color: #9ec2ff !important; }
+.parchment-sheet.theme-night .pen-crimson-ink { color: #ff9e9e !important; }
+
+/* 4. Extra Parchment Paper Styles */
+.parchment-sheet.theme-aged {
+  background-color: #e6cfa3 !important;
+  color: #29180d !important;
+  border-color: #b59156 !important;
+}
+.parchment-sheet.theme-kundakali {
+  background: linear-gradient(rgba(251, 244, 228, 0.90), rgba(242, 228, 198, 0.92)), url('../assets/theme-kundakali-wall.jpg') center/cover !important;
+  color: #24160e !important;
+}
+.parchment-sheet.theme-chitthi-gold {
+  background: linear-gradient(rgba(255, 247, 226, 0.91), rgba(248, 232, 192, 0.93)), url('../assets/theme-chitthi-box.jpg') center/cover !important;
+  color: #2a180c !important;
+}
+
+/* Coffee Stain & Paper Fold Lines */
+.parchment-sheet.has-coffee-stains::before {
+  content: "";
+  position: absolute;
+  bottom: 22px;
+  right: 26px;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 4px solid rgba(115, 68, 28, 0.14);
+  box-shadow: inset 0 0 10px rgba(115, 68, 28, 0.08);
+  pointer-events: none;
+  z-index: 1;
+}
+.parchment-sheet.has-coffee-stains::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 33.3%;
+  height: 33.3%;
+  border-top: 1px dashed rgba(92, 62, 32, 0.16);
+  border-bottom: 1px dashed rgba(92, 62, 32, 0.16);
+  background: linear-gradient(180deg, rgba(0,0,0,0.025) 0%, transparent 18%, transparent 82%, rgba(0,0,0,0.025) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Smooth Page Flip Transition */
+.parchment-sheet.page-turning {
+  animation: pageTurnFlip 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes pageTurnFlip {
+  0% { opacity: 0.45; transform: perspective(900px) rotateY(-12deg) scale(0.985); }
+  100% { opacity: 1; transform: perspective(900px) rotateY(0deg) scale(1); }
+}
+
+/* Glowing Brass Candle Beside Desk */
+.desk-candle-rig {
+  position: absolute;
+  bottom: 18px;
+  right: 20px;
+  z-index: 22;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+.candle-aura {
+  position: absolute;
+  top: -45px;
+  width: 230px;
+  height: 230px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 198, 92, 0.42) 0%, rgba(255, 145, 42, 0.14) 46%, transparent 74%);
+  pointer-events: none;
+  animation: candleAuraPulse 2.6s infinite alternate ease-in-out;
+  transition: all 0.45s ease;
+}
+body.candle-dim-mode .candle-aura {
+  width: 360px;
+  height: 360px;
+  top: -95px;
+  background: radial-gradient(circle, rgba(255, 204, 102, 0.68) 0%, rgba(245, 142, 36, 0.28) 48%, transparent 76%);
+}
+.candle-flame-group {
+  transform-origin: 50% 85%;
+  animation: flameDance 1.5s infinite alternate ease-in-out;
+}
+@keyframes flameDance {
+  0% { transform: rotate(-3.5deg) scaleY(0.95); }
+  50% { transform: rotate(2.8deg) scaleY(1.06); }
+  100% { transform: rotate(-1.5deg) scaleY(0.98); }
+}
+@keyframes candleAuraPulse {
+  0% { transform: scale(0.94); opacity: 0.82; }
+  100% { transform: scale(1.08); opacity: 1; }
+}
+
+/* Matchstick Strike + Melting Wax + Drag-to-Pull Letter */
+.matchstick-btn {
+  background: linear-gradient(90deg, #e0ba87 0%, #c4955e 76%, #a82424 77%, #731111 100%);
+  color: #fff;
+  border: 1.5px solid var(--gold-bright);
+  padding: 0.62rem 1.45rem;
+  border-radius: 999px;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.6);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+}
+.matchstick-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 14px 30px rgba(229, 193, 113, 0.35);
+}
+
+.wax-seal-btn.melting {
+  animation: none !important;
+  transform: translateX(-50%) scale(1.38, 0.45) translateY(24px) !important;
+  filter: blur(2.5px) brightness(1.4);
+  opacity: 0 !important;
+  pointer-events: none;
+  transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.pullable-letter-peek {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: 14px;
+  height: 178px;
+  background: var(--cream-paper);
+  color: var(--ink-sepia);
+  border: 1px solid #cbb184;
+  border-radius: 6px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 -6px 22px rgba(0, 0, 0, 0.32);
+  z-index: 3;
+  cursor: grab;
+  user-select: none;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+.hero-envelope.opened .pullable-letter-peek {
+  display: flex;
+  animation: peekSlideUp 0.72s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes peekSlideUp {
+  from { transform: translateY(0); }
+  to { transform: translateY(-62px); }
+}
+
+/* Floating Aroma Particles & Raindrops */
+.aroma-particle {
+  position: fixed;
+  pointer-events: none;
+  border-radius: 50%;
+  z-index: 60;
+  animation: floatAroma 4.4s ease-out forwards;
+}
+@keyframes floatAroma {
+  0% { transform: translateY(0) scale(0.5); opacity: 0.8; }
+  100% { transform: translateY(-250px) translateX(38px) scale(1.7); opacity: 0; }
+}
+
+.rain-overlay-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 55;
+  overflow: hidden;
+  display: none;
+}
+.rain-overlay-layer.active { display: block; }
+.rain-drop {
+  position: absolute;
+  top: -20px;
+  width: 1.5px;
+  height: 20px;
+  background: linear-gradient(180deg, transparent, rgba(210, 232, 255, 0.58));
+  animation: rainFall linear infinite;
+}
+@keyframes rainFall {
+  to { transform: translateY(105vh); }
+}
+
+/* Ink Blot Particle */
+.ink-blot-drop {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(35, 22, 15, 0.58) 0%, rgba(35, 22, 15, 0.08) 70%, transparent 100%);
+  pointer-events: none;
+  z-index: 4;
+  animation: inkSpread 0.65s ease-out forwards;
+}
+@keyframes inkSpread {
+  0% { transform: scale(0.2); opacity: 0.85; }
+  100% { transform: scale(1); opacity: 0.42; }
+}
+
+/* Glowing Reply Badge */
+.envelope-reply-glow {
+  border: 1.5px solid var(--gold-bright) !important;
+  box-shadow: 0 0 22px rgba(229, 193, 113, 0.48) !important;
+}
+
+/* Aesthetic Gallery Cards on Index */
+.art-gallery-card {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--gold-dim);
+  background: rgba(26, 15, 9, 0.92);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+}
+.art-gallery-card:hover {
+  transform: translateY(-6px) scale(1.015);
+  border-color: var(--gold-bright);
+}
+.art-gallery-card img {
+  width: 100%;
+  height: 210px;
+  object-fit: cover;
+  display: block;
+}
+
+
+/* ==========================================================================
+   V12 CINEMATIC ARTISTIC INTRO STYLES (index.html)
+   ========================================================================== */
+.v12-cinematic-intro {
+  background: #0d0704 !important;
+}
+
+.v12-intro-bg {
+  position: absolute;
+  inset: -20px;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(28, 15, 8, 0.58) 0%, rgba(10, 5, 3, 0.92) 78%),
+    url('../assets/theme-sunlit-window.jpg') center/cover no-repeat;
+  filter: blur(4px) brightness(0.75);
+  animation: v12SlowZoom 18s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes v12SlowZoom {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.08); }
+}
+
+.v12-leaves-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 3;
+}
+
+.v12-leaf {
+  position: absolute;
+  top: -24px;
+  width: 12px;
+  height: 7px;
+  border-radius: 12px 0 12px 0;
+  opacity: 0.65;
+  animation: leafDrift linear infinite;
+}
+
+@keyframes leafDrift {
+  0% { transform: translateY(-20px) translateX(0) rotate(0deg); opacity: 0; }
+  15% { opacity: 0.72; }
+  85% { opacity: 0.65; }
+  100% { transform: translateY(105vh) translateX(85px) rotate(320deg); opacity: 0; }
+}
+
+.v12-step-dots {
+  position: relative;
+  z-index: 15;
+  display: flex;
+  gap: 0.55rem;
+  margin-bottom: 1.1rem;
+}
+
+.v12-dot {
+  width: 28px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(242, 207, 126, 0.25);
+  transition: all 0.4s ease;
+}
+
+.v12-dot.active {
+  width: 44px;
+  background: var(--gold-bright);
+  box-shadow: 0 0 12px rgba(242, 207, 126, 0.6);
+}
+
+.v12-intro-stage {
+  position: relative;
+  z-index: 12;
+  width: min(92vw, 500px);
+  min-height: 430px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.v12-stage-card {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(24px) scale(0.95);
+  transition: all 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.v12-stage-card.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+/* Stage 1: Framed Vintage Postcard ("চিঠি বক্স ১১.১১") */
+.v12-postcard-frame {
+  position: relative;
+  width: min(76vw, 270px);
+  height: 315px;
+  padding: 10px;
+  background: #fbf4e4;
+  border-radius: 12px;
+  border: 2px solid var(--gold-bright);
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(229, 193, 113, 0.22);
+  transform: rotate(-2deg);
+  animation: postcardFloat 4.5s ease-in-out infinite alternate;
+  margin-bottom: 1.15rem;
+}
+
+@keyframes postcardFloat {
+  0% { transform: rotate(-2deg) translateY(0px); }
+  100% { transform: rotate(1.2deg) translateY(-8px); }
+}
+
+.v12-postcard-art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+  display: block;
+}
+
+.v12-floating-stamp {
+  position: absolute;
+  top: -14px;
+  right: -16px;
+  width: 62px;
+  height: 76px;
+  padding: 4px;
+  background: #fffdf7;
+  border: 2px dotted #6e4726;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.55);
+  transform: rotate(10deg);
+}
+
+.v12-floating-stamp img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.v12-postmark-stamp {
+  position: absolute;
+  bottom: -14px;
+  left: -14px;
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  background: rgba(251, 244, 228, 0.94);
+  border: 2px double #8f1d24;
+  color: #8f1d24;
+  font-size: 0.64rem;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-14deg);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+}
+
+.v12-poetic-line {
+  font-family: var(--font-bn-serif);
+  font-size: clamp(1.06rem, 2.7vw, 1.32rem);
+  color: var(--cream-paper);
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.9);
+  margin-bottom: 1rem;
+  line-height: 1.55;
+}
+
+.v12-pulse-btn {
+  animation: goldBtnGlow 2.2s infinite alternate ease-in-out;
+}
+@keyframes goldBtnGlow {
+  0% { box-shadow: 0 8px 22px rgba(200, 162, 84, 0.35); }
+  100% { box-shadow: 0 12px 34px rgba(242, 207, 126, 0.68); }
+}
+
+/* Stage 3: Unfolded Cotton Parchment Welcome Sheet */
+.v12-unfolded-letter {
+  position: relative;
+  width: 100%;
+  background:
+    repeating-linear-gradient(transparent, transparent 31px, rgba(139, 108, 72, 0.14) 32px),
+    linear-gradient(180deg, #fcf6e8 0%, #f1e1c2 100%);
+  color: var(--ink-sepia);
+  border-radius: 14px;
+  border: 1.5px solid var(--gold-bright);
+  padding: 1.85rem 1.45rem;
+  box-shadow: 0 28px 68px rgba(0, 0, 0, 0.85);
+}
+
+.v12-letter-stamp-mini {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 54px;
+  height: 68px;
+  padding: 3px;
+  background: #fff;
+  border: 2px dotted #7a5230;
+  transform: rotate(6deg);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+.v12-letter-stamp-mini img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.v12-live-calligraphy-box {
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.22rem;
+  font-weight: 700;
+  color: var(--ink-sepia);
+  padding: 0.45rem 0.6rem;
+  border-bottom: 1px dashed rgba(139, 108, 72, 0.4);
+}
+
+.v12-pen-cursor {
+  display: inline-block;
+  margin-left: 4px;
+  animation: nibBob 0.7s infinite alternate ease-in-out;
+}
+@keyframes nibBob {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(-4px) rotate(-8deg); }
+}
+/* ==========================================================================
+   V13 REALISTIC ENVELOPE TOP-EDGE PAPER TEAR STRIP (open.html)
+   ========================================================================== */
+.envelope-tear-strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 38px;
+  background: linear-gradient(180deg, #ead2a6 0%, #d4b47e 100%);
+  border-bottom: 2px dashed rgba(110, 72, 36, 0.78);
+  border-radius: 8px 8px 0 0;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.45s ease;
+}
+
+.envelope-tear-strip:active {
+  cursor: grabbing;
+}
+
+.tear-tab-handle {
+  background: #8f1d24;
+  color: #fce5a6;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 3px 11px;
+  border-radius: 999px;
+  border: 1px solid #e5c171;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.tear-track-hint {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #5c3a24;
+  letter-spacing: 0.08em;
+}
+
+.envelope-tear-strip.torn-away {
+  transform: translateX(122%) rotate(15deg) translateY(-20px) !important;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hero-envelope.paper-torn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background:
+    linear-gradient(135deg, #fbf5e8 35%, transparent 35%) -6px 0,
+    linear-gradient(225deg, #fbf5e8 35%, transparent 35%) -6px 0;
+  background-size: 12px 12px;
+  z-index: 8;
+  pointer-events: none;
+}

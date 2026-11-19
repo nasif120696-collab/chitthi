@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>পোস্টবক্স ও গোপন কোড — চিঠি (CHITTHI)</title>
+  <link rel="icon" type="image/png" href="assets/chitthi-favicon.png" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .postbox-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.6rem;
+      align-items: start;
+    }
+
+    .track-highlight {
+      border-color: var(--gold-bright) !important;
+      box-shadow: 0 0 32px rgba(229, 193, 113, 0.38) !important;
+    }
+
+    .share-result-box {
+      margin-top: 1.1rem;
+      padding: 1rem;
+      border-radius: 12px;
+      background: rgba(15, 9, 5, 0.72);
+      border: 1px dashed var(--gold-bright);
+    }
+
+    .inbox-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.15rem;
+      margin-top: 1.1rem;
+    }
+
+    .inbox-envelope-card {
+      background: linear-gradient(155deg, rgba(46, 28, 17, 0.8), rgba(22, 13, 8, 0.9));
+      border: 1px solid var(--gold-dim);
+      border-radius: 14px;
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+
+    .inbox-envelope-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--gold-bright);
+    }
+
+    .sent-chip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-top: 0.85rem;
+    }
+
+    .sent-code-chip {
+      cursor: pointer;
+      background: rgba(200, 162, 84, 0.14);
+      border: 1px solid var(--gold-dim);
+      color: var(--gold-bright);
+      padding: 0.28rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-family: inherit;
+    }
+
+    .sent-code-chip:hover {
+      border-color: var(--gold-bright);
+      background: rgba(200, 162, 84, 0.26);
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <div class="postbox-grid">
+
+      <!-- ১. ব্যক্তিগত ও উৎসব পোস্টবক্স -->
+      <section class="vintage-card" id="create-postbox-card">
+        <div class="card-icon-circle">📮</div>
+        <h2 class="serif-title" style="font-size:1.5rem; color:var(--gold-bright); margin-bottom:0.4rem;">
+          ব্যক্তিগত ও উৎসব পোস্টবক্স
+        </h2>
+        <p style="font-size:0.92rem; color:var(--cream-aged); margin-bottom:1.15rem;">
+          নিজের নামে অথবা ক্যাম্পাস/উৎসবের নামে পোস্টবক্স তৈরি করে লিংকটি স্টোরিতে শেয়ার করুন।
+        </p>
+
+        <form id="postbox-form" style="display:flex; flex-direction:column; gap:0.85rem;">
+          <select id="pb-occasion" class="vintage-select">
+            <option value="personal">💌 ব্যক্তিগত পোস্টবক্স (Personal Postbox)</option>
+            <option value="campus">🎓 ক্যাম্পাস ও ফেয়ারওয়েল ওয়াল</option>
+            <option value="eid">🌙 ঈদ ও উৎসব পোস্টবক্স</option>
+            <option value="boishakh">🌸 পহেলা বৈশাখ পোস্টবক্স</option>
+            <option value="birthday">🎂 জন্মদিনের গোপন চিঠি</option>
+          </select>
+
+          <input
+            type="text"
+            id="pb-handle"
+            class="vintage-input"
+            placeholder="ইউজারনেম দিন (যেমন: nasif অথবা baust-cse)"
+            required
+          />
+
+          <input
+            type="text"
+            id="pb-title"
+            class="vintage-input"
+            placeholder="পোস্টবক্সের শিরোনাম / আপনার নাম"
+            required
+          />
+
+          <div>
+            <label for="pb-unlock" style="display:block; font-size:0.82rem; color:var(--cream-aged); margin-bottom:0.35rem;">
+              ⏳ ঐচ্ছিক: উৎসব/ব্যাচ আনলক সময় (সব চিঠি একসাথে খুলবে)
+            </label>
+            <input type="datetime-local" id="pb-unlock" class="vintage-input" />
+          </div>
+
+          <button type="submit" id="create-postbox-btn" class="btn-gold" style="width:100%; margin-top:0.25rem;">
+            পোস্টবক্স তৈরি করুন
+          </button>
+        </form>
+
+        <!-- পোস্টবক্স তৈরি হওয়ার পর শেয়ার লিংক বক্স -->
+        <div id="postbox-share-result" class="share-result-box" style="display:none;">
+          <div style="font-size:0.84rem; color:var(--gold-bright); font-weight:700; margin-bottom:0.45rem;" id="active-postbox-label">
+            ✅ আপনার পোস্টবক্স প্রস্তুত!
+          </div>
+          <input type="text" id="postbox-share-url" class="vintage-input" readonly style="font-size:0.82rem; margin-bottom:0.65rem;" />
+          <div style="display:flex; gap:0.55rem; flex-wrap:wrap;">
+            <button type="button" id="copy-postbox-link-btn" class="btn-gold" style="flex:1; padding:0.55rem 0.9rem; font-size:0.86rem;">
+              📋 লিংক কপি করুন
+            </button>
+            <a id="open-postbox-write-link" href="write.html" data-page-flip class="btn-outline" style="flex:1; padding:0.55rem 0.9rem; font-size:0.86rem;">
+              ✉️ টেস্ট চিঠি লিখুন
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ২. গোপন ডাকটিকিট কোড ট্র্যাক করুন -->
+      <section class="vintage-card" id="track">
+        <div class="card-icon-circle">🔖</div>
+        <h2 class="serif-title" style="font-size:1.5rem; color:var(--gold-bright); margin-bottom:0.4rem;">
+          গোপন ডাকটিকিট কোড ট্র্যাক করুন
+        </h2>
+        <p style="font-size:0.92rem; color:var(--cream-aged); margin-bottom:1.15rem;">
+          আপনার পাঠানো চিঠির #BD-XXXX কোডটি দিয়ে প্রাপকের উত্তর দেখুন।
+        </p>
+
+        <form id="track-form" style="display:flex; gap:0.6rem; align-items:center;">
+          <input
+            type="text"
+            id="track-code-input"
+            class="vintage-input"
+            placeholder="#BD-4829"
+            style="flex:1; text-transform:uppercase; letter-spacing:0.06em;"
+            required
+          />
+          <button type="submit" id="track-search-btn" class="btn-crimson" style="padding:0.68rem 1.35rem; white-space:nowrap;">
+            খুঁজুন
+          </button>
+        </form>
+
+        <!-- সাম্প্রতিক পাঠানো কোডের শর্টকাট -->
+        <div id="recent-sent-codes-wrap" style="display:none; margin-top:0.9rem;">
+          <div style="font-size:0.78rem; color:var(--cream-dark);">আপনার সাম্প্রতিক পাঠানো কোডসমূহ (ক্লিক করে দেখুন):</div>
+          <div id="recent-sent-codes" class="sent-chip-list"></div>
+        </div>
+
+        <!-- সার্চ রেজাল্ট -->
+        <div id="track-result-box" style="display:none; margin-top:1.15rem; padding:1rem; border-radius:12px; background:rgba(16,9,5,0.72); border:1px solid var(--gold-dim);"></div>
+      </section>
+
+    </div>
+
+    <!-- ৩. পোস্টবক্সে আসা চিঠিসমূহ -->
+    <section style="margin-top:2.4rem;">
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.75rem;">
+        <h2 class="serif-title" style="font-size:1.45rem; color:var(--gold-bright);">
+          📬 পোস্টবক্সে আসা চিঠিসমূহ (<span id="inbox-count">0</span>)
+        </h2>
+        <button type="button" id="refresh-inbox-btn" class="pill-btn">🔄 রিফ্রেশ করুন</button>
+      </div>
+
+      <div id="inbox-list" class="inbox-grid"></div>
+      <div id="inbox-empty-msg" class="vintage-card" style="margin-top:1rem; text-align:center; padding:2rem 1rem; color:var(--cream-aged);">
+        এখনো কোনো চিঠি আসেনি। আপনার পোস্টবক্সের লিংকটি বন্ধুদের সাথে শেয়ার করুন!
+      </div>
+    </section>
+  </main>
+
+  <footer class="postal-footer">
+    <div class="footer-dev-mini">
+      <img src="assets/nasif-portrait.jpg" alt="Mushfiqul Alam Nasif" />
+      <div>
+        <div style="font-weight:700; color:var(--gold-bright);" data-i18n="footer_crafted">
+          ভালোবাসা ও যত্নে নির্মিত — মুশফিকুল আলম নাসিফ
+        </div>
+        <div style="font-size:0.78rem; color:var(--cream-dark);">
+          CSE, BAUST Khulna • Some feelings deserve a letter.
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-links">
+      <a href="https://github.com/nasif120696-collab" target="_blank" rel="noopener noreferrer" class="social-pill" style="padding:0.38rem 0.85rem; font-size:0.8rem;">GitHub</a>
+      <a href="https://www.linkedin.com/in/mushfiqulalamnasif" target="_blank" rel="noopener noreferrer" class="social-pill" style="padding:0.38rem 0.85rem; font-size:0.8rem;">LinkedIn</a>
+      <a href="mailto:mushfiqulalam14@gmail.com" class="social-pill" style="padding:0.38rem 0.85rem; font-size:0.8rem;">Gmail</a>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast-banner"></div>
+
+  <script type="module">
+    import { initUnifiedNavbar } from "./js/navbar.js";
+    import { applyTranslations } from "./js/i18n.js";
+    import { soundEngine } from "./js/audio.js";
+    import * as storage from "./js/storage.js";
+
+    initUnifiedNavbar(window.location.hash === "#track" ? "track" : "postbox");
+    applyTranslations();
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 3000);
+    }
+
+    const pbForm = document.getElementById("postbox-form");
+    const pbOccasion = document.getElementById("pb-occasion");
+    const pbHandle = document.getElementById("pb-handle");
+    const pbTitle = document.getElementById("pb-title");
+    const pbUnlock = document.getElementById("pb-unlock");
+    const shareResultBox = document.getElementById("postbox-share-result");
+    const shareUrlInput = document.getElementById("postbox-share-url");
+    const activePbLabel = document.getElementById("active-postbox-label");
+    const openWriteLink = document.getElementById("open-postbox-write-link");
+
+    function buildPostboxShareUrl(handle) {
+      const base = window.location.href.split("?")[0].split("#")[0].replace(/[^/]*$/, "");
+      return `${base}write.html?to=${encodeURIComponent(handle)}`;
+    }
+
+    function renderActivePostbox(box) {
+      if (!box || !box.handle) return;
+      const url = buildPostboxShareUrl(box.handle);
+      pbHandle.value = box.handle;
+      pbTitle.value = box.title || "";
+      if (box.occasion) pbOccasion.value = box.occasion;
+      shareUrlInput.value = url;
+      activePbLabel.textContent = `✅ সক্রিয় পোস্টবক্স: @${box.handle} (${box.title || "আমার পোস্টবক্স"})`;
+      openWriteLink.href = `write.html?to=${encodeURIComponent(box.handle)}`;
+      shareResultBox.style.display = "block";
+    }
+
+    async function loadInboxForHandle(handle) {
+      const inboxList = document.getElementById("inbox-list");
+      const emptyMsg = document.getElementById("inbox-empty-msg");
+      const countEl = document.getElementById("inbox-count");
+
+      if (!handle) {
+        countEl.textContent = "0";
+        inboxList.innerHTML = "";
+        emptyMsg.style.display = "block";
+        return;
+      }
+
+      let letters = [];
+      try {
+        if (typeof storage.getLettersForPostbox === "function") {
+          letters = (await storage.getLettersForPostbox(handle)) || [];
+        }
+      } catch (err) {
+        console.warn("Inbox fetch warning:", err);
+      }
+
+      countEl.textContent = String(letters.length);
+      if (!letters.length) {
+        inboxList.innerHTML = "";
+        emptyMsg.style.display = "block";
+        return;
+      }
+
+      emptyMsg.style.display = "none";
+      inboxList.innerHTML = letters.map((lt) => {
+        const openUrl = `open.html?id=${encodeURIComponent(lt.id || "")}`;
+        const dateStr = lt.createdAt ? new Date(lt.createdAt).toLocaleDateString("bn-BD") : "নতুন চিঠি";
+        return `
+          <article class="inbox-envelope-card tilt-3d-card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:1.3rem;">✉️</span>
+              <span style="font-size:0.75rem; color:var(--gold-bright);">#${lt.stampCode || "BD"}</span>
+            </div>
+            <div style="font-weight:700; color:var(--cream-paper);">প্রেরক: ${lt.fromName || "বেনামী"}</div>
+            <div style="font-size:0.8rem; color:var(--cream-dark);">${lt.postmark || dateStr}</div>
+            <a href="${openUrl}" data-page-flip class="btn-gold" style="margin-top:0.4rem; padding:0.48rem 0.9rem; font-size:0.84rem;">
+              🕯️ সিল ভেঙে পড়ুন
+            </a>
+          </article>
+        `;
+      }).join("");
+    }
+
+    // ১. পোস্টবক্স তৈরি সাবমিট হ্যান্ডলার
+    pbForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const rawHandle = pbHandle.value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, "");
+      const title = pbTitle.value.trim();
+
+      if (!rawHandle) {
+        showToast("অনুগ্রহ করে সঠিক ইংরেজি ইউজারনেম দিন (যেমন: nasif)");
+        pbHandle.focus();
+        return;
+      }
+
+      const batchUnlockAt = pbUnlock.value ? new Date(pbUnlock.value).getTime() : null;
+      const boxData = {
+        handle: rawHandle,
+        title: title || `@${rawHandle}`,
+        occasion: pbOccasion.value,
+        batchUnlockAt,
+        createdAt: Date.now()
+      };
+
+      try {
+        if (typeof storage.createPostbox === "function") {
+          await storage.createPostbox(boxData);
+        } else if (typeof storage.savePostbox === "function") {
+          await storage.savePostbox(boxData);
+        }
+      } catch (err) {
+        console.warn("Remote postbox save skipped, using localStorage:", err);
+      }
+
+      localStorage.setItem("chitthi_my_postbox", JSON.stringify(boxData));
+      try { soundEngine.playWaxCrack(); } catch (_) {}
+      renderActivePostbox(boxData);
+      loadInboxForHandle(rawHandle);
+      showToast(`পোস্টবক্স @${rawHandle} তৈরি হয়েছে!`);
+    });
+
+    document.getElementById("copy-postbox-link-btn").addEventListener("click", () => {
+      navigator.clipboard.writeText(shareUrlInput.value);
+      showToast("পোস্টবক্সের লিংক কপি হয়েছে! স্টোরিতে শেয়ার করুন।");
+    });
+
+    document.getElementById("refresh-inbox-btn").addEventListener("click", () => {
+      const saved = JSON.parse(localStorage.getItem("chitthi_my_postbox") || "null");
+      loadInboxForHandle(saved ? saved.handle : "");
+      showToast("পোস্টবক্স রিফ্রেশ করা হয়েছে");
+    });
+
+    // ২. গোপন ডাকটিকিট কোড ট্র্যাকিং
+    const trackForm = document.getElementById("track-form");
+    const trackInput = document.getElementById("track-code-input");
+    const trackResultBox = document.getElementById("track-result-box");
+
+    async function searchStampCode(rawCode) {
+      const cleanCode = rawCode.trim().replace(/^#/, "").toUpperCase();
+      if (!cleanCode) {
+        showToast("অনুগ্রহ করে একটি #BD কোড লিখুন");
+        return;
+      }
+
+      trackResultBox.style.display = "block";
+      trackResultBox.innerHTML = `<div style="color:var(--gold-bright);">🔍 ডাকঘরের নথিপত্রে #${cleanCode} খোঁজা হচ্ছে...</div>`;
+
+      let found = null;
+      try {
+        if (typeof storage.getLetterByStampCode === "function") {
+          found = await storage.getLetterByStampCode(cleanCode);
+        }
+      } catch (err) {
+        console.warn("Track error:", err);
+      }
+
+      if (!found) {
+        trackResultBox.innerHTML = `
+          <div style="color:#f28b82; font-weight:700;">❌ #${cleanCode} কোডের কোনো চিঠি পাওয়া যায়নি।</div>
+          <p style="font-size:0.84rem; color:var(--cream-aged); margin-top:0.35rem;">
+            কোডটি সঠিক আছে কি না যাচাই করুন (যেমন: BD-4829)।
+          </p>
+        `;
+        return;
+      }
+
+      try { soundEngine.playPaperRustle(); } catch (_) {}
+      const hasReply = found.reply && found.reply.text;
+
+      trackResultBox.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.65rem;">
+          <span style="color:var(--gold-bright); font-weight:700;">✉️ প্রাপক: ${found.toName || "প্রিয় মানুষ"}</span>
+          <span style="font-size:0.78rem; color:var(--cream-dark);">#${found.stampCode}</span>
+        </div>
+        ${
+          hasReply
+            ? `<div class="envelope-reply-glow" style="background:rgba(200,162,84,0.12); padding:0.85rem; border-radius:10px; margin-bottom:0.75rem;">
+                 <div style="font-size:0.8rem; color:var(--gold-bright); font-weight:700; margin-bottom:0.3rem;">💌 প্রাপকের গোপন উত্তর:</div>
+                 <div style="color:var(--cream-paper); white-space:pre-wrap;">${found.reply.text}</div>
+               </div>`
+            : `<div style="font-size:0.88rem; color:var(--cream-aged); padding:0.7rem; background:rgba(255,255,255,0.04); border-radius:8px; margin-bottom:0.75rem;">
+                 ⏳ প্রাপক এখনো এই চিঠির কোনো উত্তর দেননি।
+               </div>`
+        }
+        <a href="open.html?id=${encodeURIComponent(found.id || "")}" data-page-flip class="btn-outline" style="padding:0.45rem 0.95rem; font-size:0.84rem;">
+          চিঠিটি আবার দেখুন →
+        </a>
+      `;
+    }
+
+    trackForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      searchStampCode(trackInput.value);
+    });
+
+    // সাম্প্রতিক পাঠানো চিঠির কোড চিপস দেখানো
+    try {
+      const sent = typeof storage.getSentHistory === "function" ? storage.getSentHistory() : [];
+      if (sent && sent.length) {
+        const wrap = document.getElementById("recent-sent-codes-wrap");
+        const list = document.getElementById("recent-sent-codes");
+        wrap.style.display = "block";
+        list.innerHTML = sent.slice(0, 6).map((item) =>
+          `<button type="button" class="sent-code-chip" data-code="${item.stampCode}">#${item.stampCode}</button>`
+        ).join("");
+        list.querySelectorAll(".sent-code-chip").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            trackInput.value = `#${btn.dataset.code}`;
+            searchStampCode(btn.dataset.code);
+          });
+        });
+      }
+    } catch (_) {}
+
+    // সেভ করা পোস্টবক্স লোড করা
+    const savedBox = JSON.parse(localStorage.getItem("chitthi_my_postbox") || "null");
+    if (savedBox) {
+      renderActivePostbox(savedBox);
+      loadInboxForHandle(savedBox.handle);
+    }
+
+    // #track হ্যাশ থাকলে অটোমেটিক হাইলাইট ও ফোকাস করা
+    function focusTrackIfNeeded() {
+      if (window.location.hash === "#track") {
+        const card = document.getElementById("track");
+        if (card) {
+          card.scrollIntoView({ behavior: "smooth", block: "center" });
+          card.classList.add("track-highlight");
+          setTimeout(() => card.classList.remove("track-highlight"), 1800);
+        }
+        trackInput.focus();
+      }
+    }
+    window.addEventListener("hashchange", focusTrackIfNeeded);
+    focusTrackIfNeeded();
+  </script>
+</body>
+</html>

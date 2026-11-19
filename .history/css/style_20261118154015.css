@@ -1,0 +1,66 @@
+/* ==========================================================================
+   V13 REALISTIC ENVELOPE TOP-EDGE PAPER TEAR STRIP (open.html)
+   ========================================================================== */
+.envelope-tear-strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 38px;
+  background: linear-gradient(180deg, #ead2a6 0%, #d4b47e 100%);
+  border-bottom: 2px dashed rgba(110, 72, 36, 0.78);
+  border-radius: 8px 8px 0 0;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.45s ease;
+}
+
+.envelope-tear-strip:active {
+  cursor: grabbing;
+}
+
+.tear-tab-handle {
+  background: #8f1d24;
+  color: #fce5a6;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 3px 11px;
+  border-radius: 999px;
+  border: 1px solid #e5c171;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.tear-track-hint {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #5c3a24;
+  letter-spacing: 0.08em;
+}
+
+.envelope-tear-strip.torn-away {
+  transform: translateX(122%) rotate(15deg) translateY(-20px) !important;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hero-envelope.paper-torn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background:
+    linear-gradient(135deg, #fbf5e8 35%, transparent 35%) -6px 0,
+    linear-gradient(225deg, #fbf5e8 35%, transparent 35%) -6px 0;
+  background-size: 12px 12px;
+  z-index: 8;
+  pointer-events: none;
+}

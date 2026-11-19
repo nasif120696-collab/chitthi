@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>চিঠি লিখুন (Write) — চিঠি (CHITTHI)</title>
+  <link rel="icon" type="image/png" href="assets/chitthi-favicon.png" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* ফুল-স্ক্রিন ইমার্সিভ রাইটিং মোড এবং রিয়েলিস্টিক হাত অ্যানিমেশন */
+    .immersive-desk-wrap {
+      max-width: 100% !important;
+      width: 100%;
+      margin: 0 auto;
+      transition: all 0.5s ease;
+    }
+    
+    .immersive-parchment {
+      max-width: 900px !important;
+      margin: 0 auto;
+      min-height: 650px !important;
+      padding: 3rem 3.5rem 3.5rem !important;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85), inset 0 0 40px rgba(110, 72, 36, 0.1) !important;
+    }
+
+    /* নতুন বৈচিত্র্যময় পেজ ও পেপার স্টাইল */
+    .parchment-sheet.theme-vintage-daylipi {
+      background: linear-gradient(180deg, #f3e6cb 0%, #e5cfad 100%) !important;
+      background-image: repeating-linear-gradient(transparent, transparent 38px, rgba(110, 72, 36, 0.22) 39px) !important;
+      color: #261408 !important;
+    }
+    .parchment-sheet.theme-royal-velvet {
+      background: linear-gradient(180deg, #231626 0%, #150d18 100%) !important;
+      background-image: repeating-linear-gradient(transparent, transparent 38px, rgba(229, 193, 113, 0.18) 39px) !important;
+      color: #f6eedc !important;
+    }
+    .parchment-sheet.theme-bengali-nobanno {
+      background: linear-gradient(180deg, #fcf6e8 0%, #faecd0 100%) !important;
+      background-image: repeating-linear-gradient(transparent, transparent 38px, rgba(143, 29, 36, 0.16) 39px) !important;
+      color: #3b1114 !important;
+    }
+
+    /* আরও বাস্তবসম্মত হাত ও আঙুলের মুভমেন্ট অ্যানিমেশন */
+    .fountain-pen-rig {
+      width: 240px !important;
+      height: 240px !important;
+      transform-origin: 12px 210px !important;
+      transition: transform 0.06s cubic-bezier(0.2, 1, 0.3, 1), opacity 0.3s ease !important;
+      filter: drop-shadow(0 16px 20px rgba(15, 7, 2, 0.45));
+    }
+    
+    .fountain-pen-rig.actively-writing .writer-hand-group {
+      animation: realisticHandMicroTremor 0.18s infinite alternate ease-in-out;
+    }
+
+    @keyframes realisticHandMicroTremor {
+      0% { transform: translateY(0px) rotate(0deg); }
+      100% { transform: translateY(-1.5px) rotate(0.8deg); }
+    }
+  </style>
+</head>
+<body>
+  <div id="write-rain-layer" class="rain-overlay-layer"></div>
+
+  <main class="container" style="max-width:1300px;">
+    <div style="margin-bottom:1.2rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.8rem;">
+      <div>
+        <h1 class="serif-title" style="font-size:1.95rem; color:var(--gold-bright);" data-i18n="desk_title">রাইটিং ডেস্ক</h1>
+        <p id="target-box-banner" style="color:var(--cream-aged); font-size:0.94rem; display:none;"></p>
+      </div>
+
+      <!-- ফুল স্ক্রিন মোড টগল ও কন্ট্রোলস -->
+      <div style="display:flex; align-items:center; gap:0.55rem; flex-wrap:wrap;">
+        <button type="button" id="toggle-fullscreen-desk" class="pill-btn active-sound" title="ফুল স্ক্রিন পেপার মোড">
+          🖥️ <span id="fullscreen-label">ফুল-স্ক্রিন পেপার মোড</span>
+        </button>
+        <button type="button" class="pill-btn" data-open-guide="direct">
+          📖 <span data-i18n="cta_guide">কীভাবে পাঠাবেন?</span>
+        </button>
+        <button type="button" id="toggle-pen-anim-btn" class="pill-btn active-sound">
+          ✒️ <span id="pen-toggle-label">কলম ও হাত: চালু</span>
+        </button>
+        <select id="music-track-select" class="vintage-select" style="width:auto; max-width:220px; padding:0.4rem 0.7rem;"></select>
+      </div>
+    </div>
+
+    <!-- Multi-Page Controller + Draft Auto-Save Bar -->
+    <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:0.65rem; margin-bottom:1rem; padding:0.7rem 1rem; background:rgba(34,21,13,0.88); border:1px solid var(--gold-dim); border-radius:14px;">
+      <div style="display:flex; align-items:center; gap:0.45rem; flex-wrap:wrap;">
+        <span id="draft-status-badge" style="font-size:0.84rem; color:var(--gold-bright);">💾 ড্রাফট অটো-সেভ চালু</span>
+        <button type="button" id="manual-save-draft-btn" class="pill-btn" style="font-size:0.78rem;">ড্রাফট সেভ</button>
+        <button type="button" id="clear-draft-btn" class="pill-btn" style="font-size:0.78rem; opacity:0.82;">মুছুন</button>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap;" id="page-tabs-bar">
+        <button type="button" id="prev-edit-page-btn" class="pill-btn" style="padding:0.35rem 0.7rem; font-size:0.8rem;">◀</button>
+        <button type="button" class="pill-btn active-sound page-tab-btn" data-page-idx="0">পাতা ১</button>
+        <button type="button" id="next-edit-page-btn" class="pill-btn" style="padding:0.35rem 0.7rem; font-size:0.8rem;">▶</button>
+        <button type="button" id="add-page-btn" class="pill-btn" style="border-style:dashed; color:var(--gold-bright);">+ নতুন পাতা</button>
+        <button type="button" id="delete-page-btn" class="pill-btn" style="display:none; font-size:0.78rem; color:#f28b82;">পাতা বাদ দিন</button>
+      </div>
+    </div>
+
+    <div class="desk-layout" id="main-desk-layout">
+      <!-- Left: Fullscreen Immersive Walnut Desk Stage -->
+      <div class="desk-scene-stage immersive-desk-wrap" id="desk-scene-stage">
+        <div class="desk-curtain-drape" aria-hidden="true"></div>
+
+        <!-- Quick Per-Page Controls Directly on Writing Desk -->
+        <div style="position:relative; z-index:18; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:0.45rem; max-width:850px; margin:0 auto 0.85rem; padding:0.45rem 0.85rem; background:rgba(20,12,7,0.85); border:1px solid var(--gold-dim); border-radius:12px; backdrop-filter:blur(6px);">
+          <div style="display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap;">
+            <span style="font-size:0.78rem; color:var(--gold-bright); font-weight:700;" id="active-page-badge">পাতা ১ এর সাজ:</span>
+            <select id="desk-theme-select" class="vintage-select" style="width:auto; padding:0.28rem 0.6rem; font-size:0.78rem;">
+              <option value="walnut">🪵 ওয়ালনাট টেবিল</option>
+              <option value="chitthi-box">📮 চিঠি বক্স (১১.১১)</option>
+              <option value="sunlit-window">🪟 রোদেলা জানালা</option>
+              <option value="calcutta-postbox">🏛️ পুরনো ডাকবাক্স</option>
+              <option value="kundakali">🌿 কুন্দকলি স্মৃতি</option>
+              <option value="vintage-tv">📺 রেট্রো বাংলাদেশ</option>
+            </select>
+            <select id="quick-font-select" class="vintage-select" style="width:auto; padding:0.28rem 0.6rem; font-size:0.78rem;">
+              <option value="font-noto-serif">✍️ ক্লাসিক সেরিফ</option>
+              <option value="font-galada">🖋️ গালাদা ক্যালিগ্রাফি</option>
+              <option value="font-atma">🌸 আত্মা (হাতের লেখা)</option>
+              <option value="font-tiro">📜 তিরো বাংলা</option>
+              <option value="font-tiro-italic">✒️ তিরো ইটালিক</option>
+              <option value="font-baloo">💫 বালু দা ২</option>
+              <option value="font-mina">🌿 মিনা নস্টালজিক</option>
+              <option value="font-anek">📖 অনেক বাংলা</option>
+              <option value="font-hind">✨ হিন্দ শিলিগুড়ি</option>
+              <option value="font-caveat">🕯️ Caveat Hand</option>
+              <option value="font-dancing">💌 Dancing Script</option>
+              <option value="font-great-vibes">👑 Great Vibes</option>
+            </select>
+          </div>
+          <label style="display:flex; align-items:center; gap:0.35rem; font-size:0.74rem; color:var(--cream-aged); cursor:pointer;">
+            <input type="checkbox" id="apply-all-pages-check" checked style="accent-color:var(--gold-bright);" /> সব পাতায় প্রযোজ্য
+          </label>
+        </div>
+
+        <!-- Glowing Brass Candle Beside Desk -->
+        <div class="desk-candle-rig" id="desk-candle-widget" title="মোমবাতি ও ঘরের আলো অন/অফ করুন">
+          <div class="candle-aura"></div>
+          <svg width="50" height="92" viewBox="0 0 58 108" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g class="candle-flame-group">
+              <path d="M29 6 C35 16, 37 25, 29 31 C21 25, 23 16, 29 6 Z" fill="#ff9d2e"/>
+              <path d="M29 12 C32.5 18, 33.5 24, 29 28 C24.5 24, 25.5 18, 29 12 Z" fill="#fff4b8"/>
+            </g>
+            <line x1="29" y1="30" x2="29" y2="36" stroke="#1c1109" stroke-width="2"/>
+            <rect x="20" y="36" width="18" height="46" rx="4" fill="#f7ebd2" stroke="#d4bc94" stroke-width="1"/>
+            <path d="M22 36 Q24 47 26 39 Q29 51 32 38 Q35 45 36 36" fill="#fffaf0"/>
+            <ellipse cx="29" cy="84" rx="18" ry="5" fill="#d4a64a"/>
+            <rect x="25" y="84" width="8" height="12" fill="#b3822e"/>
+            <ellipse cx="29" cy="98" rx="22" ry="6" fill="#8f631e" stroke="#f2cf7e" stroke-width="1"/>
+          </svg>
+          <span id="candle-label" style="font-size:0.66rem; color:var(--gold-bright); background:rgba(16,9,4,0.78); padding:2px 7px; border-radius:999px; border:1px solid var(--gold-dim);">আলো নিভান</span>
+        </div>
+
+        <!-- Kraft Envelope & Immersive Parchment Sheet -->
+        <div class="kraft-envelope-stack">
+          <div class="kraft-envelope-backing" aria-hidden="true"></div>
+
+          <div class="parchment-sheet immersive-parchment has-coffee-stains" id="parchment-sheet">
+            <div class="real-stamp-card" id="preview-real-stamp">
+              <img id="preview-real-stamp-img" src="assets/stamp-dhaka-curzon.jpg" alt="Vintage Postage Stamp" />
+            </div>
+            <div class="paper-postmark" id="paper-postmark">
+              <span>বাংলাদেশ ডাক</span>
+              <span id="postmark-city-display">ঢাকা জিপিও</span>
+              <span id="postmark-date-display">১৭ নভে ২০২৬</span>
+              <span id="postmark-mood-display">সোনালি গোধূলি</span>
+            </div>
+
+            <div class="letter-header-inputs">
+              <input type="text" id="to-name" class="paper-input" placeholder="প্রাপকের নাম (যেমন: প্রিয় মানুষ / বন্ধু)..." />
+              <input type="text" id="from-name" class="paper-input" placeholder="প্রেরকের নাম (অথবা বেনামী রাখুন)..." />
+              <input type="text" id="envelope-address" class="paper-input" style="font-size:0.88rem; font-weight:400;" placeholder="খামের ওপর ঠিকানা (যেমন: ধানমণ্ডি, ঢাকা)..." />
+            </div>
+
+            <div class="writing-area-wrapper" id="writing-wrapper" style="min-height:380px;">
+              <textarea id="letter-body" class="letter-textarea font-noto-serif" style="min-height:380px; line-height:40px;" placeholder="এখানে আপনার মনের কথা লিখুন... কলম ও হাত আপনার সাথে সাথে চলবে..."></textarea>
+              <div id="caret-mirror" class="caret-mirror font-noto-serif" aria-hidden="true"></div>
+
+              <!-- Luxury Black-and-Gold Fountain Pen + Articulated Artist Hand -->
+              <svg id="animated-hand-pen" class="fountain-pen-rig resting-on-desk" viewBox="0 0 235 235" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                  <linearGradient id="animated-hand-pen_goldNib" x1="14" y1="220" x2="48" y2="186" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#fff4c4"/>
+                    <stop offset="45%" stop-color="#dfb152"/>
+                    <stop offset="100%" stop-color="#8a6016"/>
+                  </linearGradient>
+                  <linearGradient id="animated-hand-pen_blackLacquer" x1="38" y1="192" x2="178" y2="52" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#0d0c0b"/>
+                    <stop offset="30%" stop-color="#2c2926"/>
+                    <stop offset="52%" stop-color="#11100f"/>
+                    <stop offset="85%" stop-color="#24211e"/>
+                    <stop offset="100%" stop-color="#080807"/>
+                  </linearGradient>
+                  <linearGradient id="animated-hand-pen_goldTrim" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#fae39c"/>
+                    <stop offset="50%" stop-color="#c99738"/>
+                    <stop offset="100%" stop-color="#7d5612"/>
+                  </linearGradient>
+                  <linearGradient id="animated-hand-pen_handSkin" x1="92" y1="88" x2="205" y2="155" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#f2ccb0"/>
+                    <stop offset="62%" stop-color="#dfab84"/>
+                    <stop offset="100%" stop-color="#be865c"/>
+                  </linearGradient>
+                  <linearGradient id="animated-hand-pen_handShadow" x1="80" y1="130" x2="145" y2="175" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#cf976e"/>
+                    <stop offset="100%" stop-color="#a87048"/>
+                  </linearGradient>
+                </defs>
+
+                <ellipse class="pen-desk-shadow" cx="105" cy="204" rx="86" ry="11" fill="rgba(22, 11, 4, 0.24)" transform="rotate(-38 105 204)"/>
+
+                <g class="writer-hand-group">
+                  <path d="M112 154 C94 163, 78 176, 86 185 C94 193, 116 181, 134 168" fill="url(#animated-hand-pen_handShadow)" stroke="#8c5834" stroke-width="1.4"/>
+                  <path d="M102 136 C82 146, 66 161, 75 171 C84 179, 108 165, 126 152" fill="url(#animated-hand-pen_handShadow)" stroke="#8c5834" stroke-width="1.5"/>
+                </g>
+
+                <path d="M14 220 L34 191 L49 206 Z" fill="url(#animated-hand-pen_goldNib)" stroke="#734e10" stroke-width="0.9"/>
+                <line x1="14" y1="220" x2="32" y2="203" stroke="#2c1e16" stroke-width="1.1"/>
+                <circle cx="33" cy="202" r="2" fill="#2c1e16"/>
+
+                <path d="M34 191 L48 177 L63 192 L49 206 Z" fill="url(#animated-hand-pen_blackLacquer)"/>
+                <rect x="46" y="176" width="22" height="4" rx="1.5" transform="rotate(-45 46 176)" fill="url(#animated-hand-pen_goldTrim)"/>
+                <path d="M48 177 L166 59 L183 76 L63 192 Z" fill="url(#animated-hand-pen_blackLacquer)"/>
+                <line x1="56" y1="178" x2="168" y2="66" stroke="rgba(255,255,255,0.22)" stroke-width="2" stroke-linecap="round"/>
+                <rect x="114" y="108" width="24" height="4.5" rx="1.5" transform="rotate(-45 114 108)" fill="url(#animated-hand-pen_goldTrim)"/>
+                <rect x="120" y="102" width="24" height="3" rx="1" transform="rotate(-45 120 102)" fill="url(#animated-hand-pen_goldTrim)"/>
+                <path d="M126 98 L166 58 L171 63 L131 103 Z" fill="url(#animated-hand-pen_goldTrim)"/>
+                <path d="M166 59 C174 51, 185 53, 188 60 C191 67, 188 73, 183 76 Z" fill="#141312" stroke="#c99738" stroke-width="1.2"/>
+
+                <g class="writer-hand-group">
+                  <path d="M116 96 C136 78, 168 58, 200 48 L228 98 C194 122, 156 148, 120 158 C102 146, 101 115, 116 96 Z" fill="url(#animated-hand-pen_handSkin)" stroke="#8c5834" stroke-width="1.6"/>
+                  <path d="M126 98 C106 109, 80 131, 69 149 C64 158, 73 165, 84 159 C100 149, 122 130, 139 117" fill="url(#animated-hand-pen_handSkin)" stroke="#8c5834" stroke-width="1.6" stroke-linecap="round"/>
+                  <path d="M100 128 Q104 132 108 135" stroke="#9e6742" stroke-width="1.1" stroke-linecap="round"/>
+                  <path d="M122 139 C102 144, 82 155, 80 165 C78 173, 91 177, 109 169 C124 162, 137 152, 146 144" fill="url(#animated-hand-pen_handSkin)" stroke="#8c5834" stroke-width="1.6" stroke-linecap="round"/>
+                  <path d="M188 49 L199 44 L231 99 L220 105 Z" fill="#f6eedc" stroke="#c5a878" stroke-width="1.3"/>
+                  <path d="M196 42 L234 23 L235 102 L225 108 Z" fill="#2b180e" stroke="#c8a254" stroke-width="1.8"/>
+                  <circle cx="221" cy="84" r="3.5" fill="#e5c171"/>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Customization & Unique Feature Controls -->
+      <aside class="desk-sidebar" id="desk-sidebar-panel">
+        <!-- 1. Paper Variety & Themes -->
+        <div class="control-panel">
+          <h4>📜 বৈচিত্র্যময় পেপার থিম</h4>
+          <div class="swatch-row">
+            <button type="button" class="swatch-btn selected" data-paper="cream" style="background:#f6eedc;" title="Antique Cream"></button>
+            <button type="button" class="swatch-btn" data-paper="vintage-daylipi" style="background:#e5cfad;" title="ডায়লিপি হলুদ পাতা"></button>
+            <button type="button" class="swatch-btn" data-paper="royal-velvet" style="background:#231626;" title="রয়েল ভেলভেট"></button>
+            <button type="button" class="swatch-btn" data-paper="bengali-nobanno" style="background:#faecd0;" title="বাঙালি নবান্ন"></button>
+            <button type="button" class="swatch-btn" data-paper="kundakali" style="background:url('assets/theme-kundakali-wall.jpg') center/cover;" title="কুন্দকলি পেপার"></button>
+            <button type="button" class="swatch-btn" data-paper="chitthi-gold" style="background:url('assets/theme-chitthi-box.jpg') center/cover;" title="চিঠি বক্স সোনালি"></button>
+          </div>
+        </div>
+
+        <!-- 2. Wax Seal Color -->
+        <div class="control-panel">
+          <h4>🕯️ মোমের সিলের রং</h4>
+          <div class="swatch-row">
+            <button type="button" class="swatch-btn selected" data-wax="crimson" style="background:#8f1d24;" title="Royal Crimson"></button>
+            <button type="button" class="swatch-btn" data-wax="emerald" style="background:#1e563f;" title="Forest Emerald"></button>
+            <button type="button" class="swatch-btn" data-wax="royal" style="background:#233b6e;" title="Midnight Sapphire"></button>
+            <button type="button" class="swatch-btn" data-wax="gold" style="background:#a67c2e;" title="Antique Gold"></button>
+          </div>
+        </div>
+
+        <!-- 3. Pen Ink & Stamp Selector -->
+        <div class="control-panel">
+          <h4>🖋️ কালি ও ডাকটিকিট</h4>
+          <div style="display:flex; flex-direction:column; gap:0.55rem;">
+            <select id="pen-mode-select" class="vintage-select">
+              <option value="fountain">ফাউন্টেন পেন (সেপিয়া কালি)</option>
+              <option value="quill">রাজকীয় পালক (নীল কালি)</option>
+              <option value="crimson-ink">আলতা লাল কালি (Crimson Ink)</option>
+              <option value="pencil">ভিন্টেজ পেন্সিল (Graphite)</option>
+            </select>
+            <select id="stamp-select" class="vintage-select">
+              <option value="dhaka_curzon">🏛️ ঢাকা কার্জন হল ডাকটিকিট</option>
+              <option value="bangladesh_85">🇧🇩 বাংলাদেশ ৮৫ এয়ার মেইল</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 4. Voice Note Recorder -->
+        <div class="control-panel">
+          <h4>🎙️ ভয়েস নোট জুড়ুন</h4>
+          <div style="display:flex; gap:0.5rem; align-items:center;">
+            <button type="button" id="record-voice-btn" class="pill-btn" style="flex:1; justify-content:center;">● রেকর্ড শুরু</button>
+            <button type="button" id="clear-voice-btn" class="pill-btn" style="display:none;">মুছুন</button>
+          </div>
+          <audio id="voice-preview-audio" controls style="display:none; width:100%; margin-top:0.55rem; height:34px;"></audio>
+        </div>
+
+        <!-- Seal & Send Button -->
+        <button type="button" id="seal-send-btn" class="btn-crimson" style="width:100%; padding:1rem;">
+          <span>🕯️</span>
+          <span>মোমের সিল দিয়ে চিঠি পাঠান</span>
+        </button>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Sealed Success Modal -->
+  <div class="modal-backdrop" id="sent-modal">
+    <div class="modal-card">
+      <div style="text-align:center; margin-bottom:1rem;">
+        <div style="font-size:2.5rem;">🕯️✉️</div>
+        <h3 class="serif-title" style="font-size:1.5rem; color:var(--gold-bright);">
+          চিঠিটি সিলমোহর করা হয়েছে!
+        </h3>
+        <p style="font-size:0.92rem; color:var(--cream-aged); margin-top:0.35rem;">
+          নিচের লিংকটি প্রাপককে পাঠান। আর গোপন কোডটি সংরক্ষণ করুন—প্রাপক উত্তর দিলে দেখতে পাবেন।
+        </p>
+      </div>
+
+      <div style="background:rgba(0,0,0,0.45); border:1px dashed var(--gold-bright); border-radius:10px; padding:0.85rem; margin-bottom:0.85rem; text-align:center;">
+        <div style="font-size:0.78rem; color:var(--cream-dark);">SECRET STAMP CODE</div>
+        <div id="generated-stamp-code" style="font-size:1.45rem; font-weight:700; color:var(--gold-bright); letter-spacing:0.1em;">
+          #BD-0000
+        </div>
+      </div>
+
+      <input type="text" id="generated-share-link" class="vintage-input" readonly style="margin-bottom:0.9rem; font-size:0.84rem;" />
+
+      <div style="display:flex; gap:0.65rem; flex-wrap:wrap;">
+        <button type="button" id="copy-link-btn" class="btn-gold" style="flex:1; padding:0.7rem;">লিংক কপি করুন</button>
+        <button type="button" id="copy-code-btn" class="btn-outline" style="flex:1; padding:0.7rem;">কোড কপি করুন</button>
+      </div>
+      <div style="text-align:center; margin-top:0.9rem;">
+        <button type="button" id="close-modal-btn" class="pill-btn">বন্ধ করুন</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast-banner"></div>
+
+  <script type="module">
+    import { initUnifiedNavbar } from "./js/navbar.js";
+    initUnifiedNavbar("write");
+
+    import { applyTranslations, toggleLang, getLang, t } from "./js/i18n.js";
+    import { soundEngine, setupGlobalMusicControls } from "./js/audio.js";
+    import { saveLetter, getPostboxInfo } from "./js/storage.js";
+
+    applyTranslations();
+    const { refreshUI: refreshMusicUI } = setupGlobalMusicControls(getLang, t);
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 3000);
+    }
+
+    // Full-Screen Immersive Paper Mode Toggle
+    let isFullscreenPaper = false;
+    const fullscreenBtn = document.getElementById("toggle-fullscreen-desk");
+    const sidebarPanel = document.getElementById("desk-sidebar-panel");
+    const mainDeskLayout = document.getElementById("main-desk-layout");
+
+    fullscreenBtn.addEventListener("click", () => {
+      isFullscreenPaper = !isFullscreenPaper;
+      if (isFullscreenPaper) {
+        sidebarPanel.style.display = "none";
+        mainDeskLayout.style.gridTemplateColumns = "1fr";
+        fullscreenBtn.innerHTML = "🖥️ <span id='fullscreen-label'>স্ট্যান্ডার্ড ডেস্ক মোড</span>";
+        fullscreenBtn.classList.add("active-sound");
+        showToast("ফুল-স্ক্রিন পেপার মোড চালু হয়েছে");
+      } else {
+        sidebarPanel.style.display = "flex";
+        mainDeskLayout.style.gridTemplateColumns = "1fr 340px";
+        fullscreenBtn.innerHTML = "🖥️ <span id='fullscreen-label'>ফুল-স্ক্রিন পেপার মোড</span>";
+        fullscreenBtn.classList.remove("active-sound");
+        showToast("স্ট্যান্ডার্ড ডেস্ক মোড");
+      }
+    });
+
+    // Populate Song Dropdown
+    const trackSelect = document.getElementById("music-track-select");
+    function renderSongOptions() {
+      const lang = getLang();
+      const tracks = soundEngine.getAllTracks();
+      trackSelect.innerHTML = tracks.map((tr) =>
+        `<option value="${tr.id}" ${tr.id === soundEngine.currentTrackId ? "selected" : ""}>${lang === "bn" ? tr.titleBn : tr.titleEn}</option>`
+      ).join("");
+    }
+    renderSongOptions();
+    trackSelect.addEventListener("change", (e) => { soundEngine.setTrackById(e.target.value, true); });
+
+    // Multi-page & Per-page customizer logic
+    const DRAFT_KEY = "chitthi_v11_draft";
+    const deskThemeSel = document.getElementById("desk-theme-select");
+    const quickFontSel = document.getElementById("quick-font-select");
+    const applyAllCheck = document.getElementById("apply-all-pages-check");
+    const penModeSel = document.getElementById("pen-mode-select");
+    const stampSel = document.getElementById("stamp-select");
+    const aromaSel = document.getElementById("aroma-select");
+    const coffeeCheck = document.getElementById("coffee-stain-toggle");
+    const sheet = document.getElementById("parchment-sheet");
+    const textarea = document.getElementById("letter-body");
+    const mirror = document.getElementById("caret-mirror");
+    const deskStage = document.getElementById("desk-scene-stage");
+
+    const params = new URLSearchParams(window.location.search);
+    const targetBox = params.get("to") || "";
+    let boxUnlockAt = null;
+    let boxOccasion = "personal";
+
+    if (targetBox) {
+      const banner = document.getElementById("target-box-banner");
+      banner.style.display = "block";
+      banner.textContent = `📬 প্রাপকের পোস্টবক্স: @${targetBox}`;
+      document.getElementById("to-name").value = `@${targetBox}`;
+      getPostboxInfo(targetBox).then((info) => {
+        if (info) {
+          boxOccasion = info.occasion || "personal";
+          if (info.batchUnlockAt) boxUnlockAt = info.batchUnlockAt;
+        }
+      });
+    }
+
+    let pages = [""];
+    let pageStyles = [{
+      paperTheme: "cream",
+      deskTheme: deskThemeSel ? deskThemeSel.value : "walnut",
+      fontClass: quickFontSel ? quickFontSel.value : "font-noto-serif",
+      penMode: penModeSel ? penModeSel.value : "fountain"
+    }];
+    let currentPageIdx = 0;
+    let selectedPaper = "cream";
+
+    document.querySelectorAll("[data-paper]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        updateStyleProp("paperTheme", btn.dataset.paper);
+      });
+    });
+
+    function syncVisualsToCurrentPage(triggerTurnAnim = false) {
+      const st = pageStyles[currentPageIdx] || {
+        paperTheme: "cream",
+        deskTheme: "walnut",
+        fontClass: "font-noto-serif",
+        penMode: "fountain"
+      };
+
+      selectedPaper = st.paperTheme || "cream";
+      if (deskThemeSel) deskThemeSel.value = st.deskTheme || "walnut";
+      if (quickFontSel) quickFontSel.value = st.fontClass || "font-noto-serif";
+      if (penModeSel) penModeSel.value = st.penMode || "fountain";
+
+      document.querySelectorAll("[data-paper]").forEach((b) => {
+        b.classList.toggle("selected", b.dataset.paper === selectedPaper);
+      });
+
+      if (deskStage) {
+        deskStage.className = "desk-scene-stage immersive-desk-wrap" + (st.deskTheme !== "walnut" ? ` desk-theme-${st.deskTheme}` : "");
+      }
+
+      if (sheet) {
+        sheet.className = "parchment-sheet immersive-parchment"
+          + (selectedPaper !== "cream" ? ` theme-${selectedPaper}` : "")
+          + (triggerTurnAnim ? " page-turning" : "");
+        if (triggerTurnAnim) setTimeout(() => sheet.classList.remove("page-turning"), 450);
+      }
+
+      if (textarea && mirror) {
+        const fClass = st.fontClass || "font-noto-serif";
+        const pMode = st.penMode || "fountain";
+        textarea.className = `letter-textarea ${fClass} pen-${pMode}`;
+        mirror.className = `caret-mirror ${fClass}`;
+      }
+
+      const stampImgMap = {
+        dhaka_curzon: "assets/stamp-dhaka-curzon.jpg",
+        bangladesh_85: "assets/stamp-bangladesh-85.jpg"
+      };
+      const stampImgEl = document.getElementById("preview-real-stamp-img");
+      if (stampImgEl && stampSel) {
+        stampImgEl.src = stampImgMap[stampSel.value] || stampImgMap.dhaka_curzon;
+      }
+
+      const badge = document.getElementById("active-page-badge");
+      if (badge) badge.textContent = `পাতা ${currentPageIdx + 1} এর সাজ:`;
+      const delBtn = document.getElementById("delete-page-btn");
+      if (delBtn) delBtn.style.display = pages.length > 1 ? "inline-flex" : "none";
+    }
+
+    function updateStyleProp(prop, val) {
+      if (applyAllCheck && applyAllCheck.checked) {
+        pageStyles.forEach((s) => (s[prop] = val));
+      } else {
+        pageStyles[currentPageIdx][prop] = val;
+      }
+      syncVisualsToCurrentPage(false);
+      saveDraftNow();
+    }
+
+    if (deskThemeSel) deskThemeSel.addEventListener("change", () => updateStyleProp("deskTheme", deskThemeSel.value));
+    if (quickFontSel) quickFontSel.addEventListener("change", () => {
+      updateStyleProp("fontClass", quickFontSel.value);
+      soundEngine.playMailboxClick();
+    });
+    if (penModeSel) penModeSel.addEventListener("change", () => updateStyleProp("penMode", penModeSel.value));
+    [stampSel, aromaSel].forEach((el) => {
+      if (el) el.addEventListener("change", () => { syncVisualsToCurrentPage(false); saveDraftNow(); });
+    });
+
+    const pageTabsBar = document.getElementById("page-tabs-bar");
+    const nextEditBtn = document.getElementById("next-edit-page-btn");
+    const prevEditBtn = document.getElementById("prev-edit-page-btn");
+    const addPageBtn = document.getElementById("add-page-btn");
+    const deletePageBtn = document.getElementById("delete-page-btn");
+
+    function switchToEditPage(targetIdx) {
+      if (targetIdx < 0 || targetIdx >= pages.length) return;
+      pages[currentPageIdx] = textarea.value;
+      currentPageIdx = targetIdx;
+      textarea.value = pages[currentPageIdx] || "";
+      renderPageTabs();
+      syncVisualsToCurrentPage(true);
+      soundEngine.playPaperRustle();
+    }
+
+    function renderPageTabs() {
+      if (!pageTabsBar || !nextEditBtn) return;
+      pageTabsBar.querySelectorAll(".page-tab-btn").forEach((b) => b.remove());
+      pages.forEach((_, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "pill-btn page-tab-btn" + (idx === currentPageIdx ? " active-sound" : "");
+        btn.textContent = `পাতা ${idx + 1}`;
+        btn.addEventListener("click", () => switchToEditPage(idx));
+        pageTabsBar.insertBefore(btn, nextEditBtn);
+      });
+    }
+
+    if (prevEditBtn) prevEditBtn.addEventListener("click", () => switchToEditPage(currentPageIdx - 1));
+    if (nextEditBtn) nextEditBtn.addEventListener("click", () => switchToEditPage(currentPageIdx + 1));
+
+    if (addPageBtn) {
+      addPageBtn.addEventListener("click", () => {
+        if (pages.length >= 6) { showToast("সর্বোচ্চ ৬টি পাতা যোগ করা যাবে"); return; }
+        pages[currentPageIdx] = textarea.value;
+        const currentStyle = { ...pageStyles[currentPageIdx] };
+        pages.push("");
+        pageStyles.push(currentStyle);
+        switchToEditPage(pages.length - 1);
+        saveDraftNow();
+        showToast(`নতুন পাতা ${pages.length} যোগ করা হয়েছে!`);
+      });
+    }
+
+    if (deletePageBtn) {
+      deletePageBtn.addEventListener("click", () => {
+        if (pages.length <= 1) return;
+        pages.splice(currentPageIdx, 1);
+        pageStyles.splice(currentPageIdx, 1);
+        currentPageIdx = Math.max(0, currentPageIdx - 1);
+        textarea.value = pages[currentPageIdx] || "";
+        renderPageTabs();
+        syncVisualsToCurrentPage(true);
+        saveDraftNow();
+        showToast("পাতাটি বাদ দেওয়া হয়েছে");
+      });
+    }
+
+    const draftBadge = document.getElementById("draft-status-badge");
+    function saveDraftNow() {
+      pages[currentPageIdx] = textarea.value;
+      try {
+        localStorage.setItem(DRAFT_KEY, JSON.stringify({
+          toName: document.getElementById("to-name").value,
+          fromName: document.getElementById("from-name").value,
+          envelopeAddress: document.getElementById("envelope-address").value,
+          pages,
+          pageStyles,
+          currentPageIdx,
+          stampId: stampSel ? stampSel.value : "dhaka_curzon",
+          aroma: aromaSel ? aromaSel.value : "none"
+        }));
+        const tm = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        if (draftBadge) draftBadge.textContent = `💾 ড্রাফট সেভড (${tm})`;
+      } catch (_) {}
+    }
+
+    try {
+      const savedDraft = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
+      if (savedDraft) {
+        if (savedDraft.toName && !document.getElementById("to-name").value) document.getElementById("to-name").value = savedDraft.toName;
+        if (savedDraft.fromName) document.getElementById("from-name").value = savedDraft.fromName;
+        if (savedDraft.envelopeAddress) document.getElementById("envelope-address").value = savedDraft.envelopeAddress;
+        if (Array.isArray(savedDraft.pages) && savedDraft.pages.length) {
+          pages = savedDraft.pages;
+          pageStyles = Array.isArray(savedDraft.pageStyles) && savedDraft.pageStyles.length === pages.length
+            ? savedDraft.pageStyles
+            : pages.map(() => ({ paperTheme: "cream", deskTheme: "walnut", fontClass: "font-noto-serif", penMode: "fountain" }));
+          currentPageIdx = Math.min(savedDraft.currentPageIdx || 0, pages.length - 1);
+          textarea.value = pages[currentPageIdx] || "";
+          renderPageTabs();
+        }
+        if (savedDraft.stampId && stampSel) stampSel.value = savedDraft.stampId;
+        if (savedDraft.aroma && aromaSel) aromaSel.value = savedDraft.aroma;
+      }
+    } catch (_) {}
+
+    syncVisualsToCurrentPage(false);
+
+    document.getElementById("manual-save-draft-btn").addEventListener("click", () => {
+      saveDraftNow();
+      showToast("আপনার চিঠির ড্রাফট সংরক্ষিত হয়েছে!");
+    });
+    document.getElementById("clear-draft-btn").addEventListener("click", () => {
+      localStorage.removeItem(DRAFT_KEY);
+      pages = [""];
+      pageStyles = [{ paperTheme: "cream", deskTheme: "walnut", fontClass: "font-noto-serif", penMode: "fountain" }];
+      currentPageIdx = 0;
+      textarea.value = "";
+      document.getElementById("to-name").value = "";
+      document.getElementById("from-name").value = "";
+      document.getElementById("envelope-address").value = "";
+      renderPageTabs();
+      syncVisualsToCurrentPage(false);
+      showToast("ড্রাফট পরিষ্কার করা হয়েছে");
+    });
+
+    // Voice Note Recorder
+    let mediaRec = null;
+    let voiceChunks = [];
+    let voiceNoteBase64 = "";
+    const recBtn = document.getElementById("record-voice-btn");
+    const clrVoiceBtn = document.getElementById("clear-voice-btn");
+    const voiceAudio = document.getElementById("voice-preview-audio");
+
+    if (recBtn) {
+      recBtn.addEventListener("click", async () => {
+        if (mediaRec && mediaRec.state === "recording") {
+          mediaRec.stop();
+          recBtn.textContent = "● পুনরায় রেকর্ড";
+          return;
+        }
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          voiceChunks = [];
+          mediaRec = new MediaRecorder(stream);
+          mediaRec.ondataavailable = (e) => { if (e.data.size > 0) voiceChunks.push(e.data); };
+          mediaRec.onstop = () => {
+            stream.getTracks().forEach((t) => t.stop());
+            const blob = new Blob(voiceChunks, { type: "audio/webm" });
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              voiceNoteBase64 = reader.result || "";
+              if (voiceAudio) { voiceAudio.src = voiceNoteBase64; voiceAudio.style.display = "block"; }
+              if (clrVoiceBtn) clrVoiceBtn.style.display = "inline-flex";
+              showToast("ভয়েস নোট খামের সাথে যুক্ত হয়েছে!");
+            };
+            reader.readAsDataURL(blob);
+          };
+          mediaRec.start();
+          recBtn.textContent = "⏹ থামান (রেকর্ডিং...)";
+          setTimeout(() => { if (mediaRec && mediaRec.state === "recording") mediaRec.stop(); }, 15000);
+        } catch (_) {
+          showToast("মাইক্রোফোন পারমিশন পাওয়া যায়নি");
+        }
+      });
+    }
+
+    if (clrVoiceBtn) {
+      clrVoiceBtn.addEventListener("click", () => {
+        voiceNoteBase64 = "";
+        if (voiceAudio) voiceAudio.style.display = "none";
+        clrVoiceBtn.style.display = "none";
+        if (recBtn) recBtn.textContent = "● রেকর্ড শুরু";
+      });
+    }
+
+    // Fountain Pen & Hand Physics
+    const handPen = document.getElementById("animated-hand-pen");
+    const togglePenBtn = document.getElementById("toggle-pen-anim-btn");
+    const penToggleLabel = document.getElementById("pen-toggle-label");
+    let penAnimEnabled = true;
+    let prevX = 24;
+    let idleTimeout = null;
+    let strokePhase = 0;
+
+    function syncDeskWidthVar() {
+      if (wrapper && handPen) {
+        handPen.style.setProperty("--desk-w", `${wrapper.clientWidth}px`);
+      }
+    }
+    syncDeskWidthVar();
+    window.addEventListener("resize", syncDeskWidthVar);
+
+    if (togglePenBtn) {
+      togglePenBtn.addEventListener("click", () => {
+        penAnimEnabled = !penAnimEnabled;
+        togglePenBtn.classList.toggle("active-sound", penAnimEnabled);
+        if (handPen) handPen.classList.toggle("pen-hidden", !penAnimEnabled);
+        if (penToggleLabel) penToggleLabel.textContent = penAnimEnabled ? "কলম ও হাত: চালু" : "কলম ও হাত: বন্ধ";
+      });
+    }
+
+    function parkPenAtRest() {
+      if (handPen) {
+        handPen.classList.remove("actively-writing");
+        handPen.classList.add("resting-on-desk");
+      }
+    }
+
+    function updateHandPosition(isTyping = false) {
+      if (!penAnimEnabled || !handPen || !wrapper || !textarea || !mirror) return;
+      syncDeskWidthVar();
+
+      const pos = textarea.selectionStart || textarea.value.length;
+      const textBefore = textarea.value.slice(0, pos);
+      mirror.textContent = textBefore;
+
+      const marker = document.createElement("span");
+      marker.textContent = "|";
+      mirror.appendChild(marker);
+
+      const x = Math.min(marker.offsetLeft, wrapper.clientWidth - 34);
+      const y = Math.min(marker.offsetTop - textarea.scrollTop + 26, wrapper.clientHeight - 8);
+
+      const dx = x - prevX;
+      prevX = x;
+      strokePhase += 1;
+
+      const velocityTilt = Math.max(-8, Math.min(8, dx * 0.25));
+      const microOscillation = isTyping ? Math.sin(strokePhase * 2.0) * 3.0 : 0;
+      const verticalBob = isTyping ? Math.cos(strokePhase * 2.2) * 2.0 : 0;
+
+      const penX = x - 14;
+      const penY = y - 218 + verticalBob;
+
+      handPen.classList.remove("resting-on-desk");
+      handPen.classList.add("actively-writing");
+      handPen.style.transform = `translate(${penX}px, ${penY}px) rotate(${(velocityTilt + microOscillation).toFixed(2)}deg)`;
+
+      clearTimeout(idleTimeout);
+      idleTimeout = setTimeout(parkPenAtRest, 1350);
+
+      if (isTyping) {
+        const spark = document.createElement("div");
+        spark.className = "ink-sparkle";
+        spark.style.left = `${x}px`;
+        spark.style.top = `${y}px`;
+        wrapper.appendChild(spark);
+        setTimeout(() => spark.remove(), 650);
+      }
+    }
+
+    textarea.addEventListener("input", () => {
+      pages[currentPageIdx] = textarea.value;
+      const curPen = penModeSel ? penModeSel.value : "fountain";
+      soundEngine.playPenScratch(curPen);
+      saveDraftNow();
+      updateHandPosition(true);
+    });
+
+    textarea.addEventListener("focus", () => { if (textarea.value.length > 0) updateHandPosition(false); });
+    textarea.addEventListener("click", () => updateHandPosition(false));
+    textarea.addEventListener("keyup", () => updateHandPosition(false));
+
+    // Seal & Dispatch Letter
+    document.getElementById("seal-send-btn").addEventListener("click", async () => {
+      const body = textarea.value.trim();
+      if (!body) {
+        showToast("অনুগ্রহ করে চিঠিতে কিছু লিখুন!");
+        textarea.focus();
+        return;
+      }
+
+      const unlockInput = document.getElementById("unlock-time").value;
+      const unlockAt = unlockInput ? new Date(unlockInput).getTime() : boxUnlockAt;
+
+      const selectedTrack = soundEngine.getCurrentTrack();
+      const customUrl = document.getElementById("custom-song-url").value.trim();
+      const finalSongUrl = customUrl || (selectedTrack && !selectedTrack.isBlob && selectedTrack.src ? selectedTrack.src : "");
+      const finalSongTitle = selectedTrack ? selectedTrack.titleBn : "বৃষ্টি ও পিয়ানো";
+
+      pages[currentPageIdx] = textarea.value;
+      const validIndices = pages.map((p, idx) => (p.trim() ? idx : -1)).filter((i) => i >= 0);
+      const nonEmptyPages = validIndices.length ? validIndices.map((i) => pages[i].trim()) : [body];
+      const finalPageStyles = validIndices.length ? validIndices.map((i) => pageStyles[i]) : [pageStyles[0]];
+      const finalBody = nonEmptyPages.join("\n\n");
+
+      soundEngine.playWaxCrack();
+      soundEngine.playTelegraphSend();
+
+      const { record, shareUrl } = await saveLetter({
+        toName: document.getElementById("to-name").value.trim(),
+        fromName: document.getElementById("from-name").value.trim(),
+        envelopeAddress: document.getElementById("envelope-address").value.trim(),
+        targetBox,
+        occasion: boxOccasion,
+        body: finalBody,
+        pages: nonEmptyPages,
+        pageStyles: finalPageStyles,
+        paperTheme: finalPageStyles[0].paperTheme || selectedPaper,
+        deskTheme: finalPageStyles[0].deskTheme || (deskThemeSel ? deskThemeSel.value : "walnut"),
+        pageBgTheme: document.getElementById("write-page-bg-select") ? document.getElementById("write-page-bg-select").value : "default",
+        coffeeStains: true,
+        waxColor: "crimson",
+        stampId: stampSel ? stampSel.value : "dhaka_curzon",
+        penMode: finalPageStyles[0].penMode || "fountain",
+        fontClass: finalPageStyles[0].fontClass || "font-noto-serif",
+        aroma: aromaSel ? aromaSel.value : "none",
+        weatherMode: "golden",
+        voiceNoteData: voiceNoteBase64,
+        postmark: `ঢাকা জিপিও • ${document.getElementById("postmark-date-display").textContent}`,
+        songId: selectedTrack ? selectedTrack.id : "piano",
+        songTitle: finalSongTitle,
+        songUrl: finalSongUrl,
+        unlockAt,
+        burnAfterReading: document.getElementById("burn-toggle").checked,
+        keystrokes: []
+      });
+      localStorage.removeItem(DRAFT_KEY);
+
+      document.getElementById("generated-stamp-code").textContent = `#${record.stampCode}`;
+      document.getElementById("generated-share-link").value = shareUrl;
+      document.getElementById("sent-modal").classList.add("show");
+    });
+
+    document.getElementById("copy-link-btn").addEventListener("click", () => {
+      navigator.clipboard.writeText(document.getElementById("generated-share-link").value);
+      showToast("চিঠির লিংক কপি হয়েছে!");
+    });
+    document.getElementById("copy-code-btn").addEventListener("click", () => {
+      const code = document.getElementById("generated-stamp-code").textContent;
+      navigator.clipboard.writeText(code);
+      showToast(`গোপন কোড ${code} কপি হয়েছে!`);
+    });
+    document.getElementById("close-modal-btn").addEventListener("click", () => {
+      document.getElementById("sent-modal").classList.remove("show");
+    });
+  </script>
+</body>
+</html>
